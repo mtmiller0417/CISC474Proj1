@@ -1,0 +1,132 @@
+body {
+    background:lightgray;
+}
+
+#mainMenu {
+    position: fixed;
+    width:300px;
+    height:400px;
+    margin-left:-150px;
+    margin-top:-200px;
+    
+    top: 50%;
+    left: 50%;
+
+    text-align:center;
+}
+
+.title {
+    position:relative;
+    height:100px;
+    width:300px;
+    margin-bottom: 40px;
+
+    background-size: 1px 300%;
+    color:black;
+
+    text-align:center;
+    font-family:arial;
+    font-size:50px;
+
+    display:inline-block;
+}
+
+.title p {
+    position:relative;
+    top:8px;
+}
+
+.btn {
+    position:relative;
+    height:50px;
+    width:200px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    
+    background:darkslategray;
+    color:white;
+    border-radius: 8px;
+    
+    text-align:center;
+    font-family:arial;
+    font-size:30px;
+
+    -webkit-transition:0.5s;
+    transition:0.5s;
+    
+    display:inline-block;
+    
+    cursor:pointer;
+}
+
+#playBtn:hover {
+    background:slategray;
+    color:white;
+    
+    -webkit-transform:scale(1.1) rotate(2deg);
+    transform:scale(1.1) rotate(2deg);
+}
+
+#helpBtn:hover {
+    background:slategray;
+    color:white;
+
+    -webkit-transform:scale(1.1) rotate(-2deg);
+    transform:scale(1.1) rotate(-2deg);
+}
+
+#helpMenu{
+    position: fixed;
+    width:600px;
+    height:400px;
+    margin-left:-300px;
+    margin-top:-200px;
+    
+    top: 50%;
+    left: 50%;
+
+    background:darkslategray;
+    color:white;
+    border-radius: 12px;
+
+    text-align:center;
+    font-family:arial;
+    font-size:30px;
+}
+
+#helpOkBtn:hover {
+    background:slategray;
+    color:white;
+
+    -webkit-transform:scale(1.1);
+    transform:scale(1.1);
+}
+
+#gameScreen{
+    position: fixed;
+    width:800px;
+    height:600px;
+    margin-left:-400px;
+    margin-top:-300px;
+    
+    top: 50%;
+    left: 50%;
+
+    background:white;
+    color:white;
+
+    text-align:center;
+    font-family:arial;
+    font-size:30px;
+}
+
+#player {
+    position:relative;
+    height:50px;
+    width:50px;
+    left:0px;
+    top:0px;
+    
+    background:darkslategray;
+    color:white;
+}
