@@ -2,6 +2,9 @@ body {
     /*background:lightgray;*/
     /* Set background image */
     background-image: url("Images/backgroundjpg.jpg");
+    background-size: 100%;
+    background-repeat: no-repeat;
+    
 }
 
 #mainMenu {
