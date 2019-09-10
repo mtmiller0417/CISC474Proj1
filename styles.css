@@ -132,3 +132,14 @@ body {
     background:darkslategray;
     color:white;
 }
+
+#bullet {
+    position:relative;
+    height:5px;
+    width:5px;
+    left:0px;
+    top:0px;
+    
+    background:darkslategray;
+    color:white;
+}

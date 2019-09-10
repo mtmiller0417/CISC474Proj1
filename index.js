@@ -1,6 +1,8 @@
 /* Global Vars */
 keys = [];
+bulletList = [];
 var game = undefined;
+bulletId = 0;
 
 $(function(){
     //this code runs after page is fully loaded
@@ -31,6 +33,10 @@ $(function(){
         $("#gameScreen").fadeOut("medium",function(){
             $("#mainMenu").slideDown();
         });
+    });
+
+    $("#gameScreen").mousedown(function (e) {
+        addBullet("black", 10, 2, game.player.x, game.player.y, e.clientX, e.clientY);
     });
 
     /* Key Listeners */
@@ -81,5 +87,39 @@ function gameComponent(width, height, x, y) {
 
         $("#player").css("left",self.x);
         $("#player").css("top",self.y);
+
+        $.each(bulletList, function (index, bullet) {  
+            updateBullet(bullet, self);
+            $("#bullet").css("center",bullet.x);
+            $("#bullet").css("center",bullet.y);
+         });
     }
+}
+
+function updateBullet(bullet, player) {
+    var dx = (bullet.eX - player.x);
+    var dy = (bullet.eY - player.y);
+    var mag = Math.sqrt(dx * dx + dy * dy);              
+    bullet.velocityX = (dx / mag) * bullet.speed;
+    bullet.velocityY = (dy / mag) * bullet.speed;
+    bullet.x += bullet.velocityX;
+    bullet.y += bullet.velocityY;
+}
+
+function bullet(id, color, size, speed, x, y, eX, eY) {
+    this.id = id;           
+    this.color = color;
+    this.size = size;
+    this.x = x;
+    this.y = y;
+    this.eX = eX;
+    this.eY = eY;
+    this.velocityX;
+    this.velocityY;
+    this.speed = speed;
+}
+
+function addBullet(color, bsize, bspeed, x, y, eX, eY) {
+    bulletList[bulletId] = new bullet(bulletId, color, bsize, bspeed, x, y, eX, eY);
+    bulletId = (bulletId + 1)%100;
 }
