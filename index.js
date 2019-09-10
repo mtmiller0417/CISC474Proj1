@@ -69,10 +69,10 @@ function gameComponent(width, height, x, y) {
         self.speedX = 0;
         self.speedY = 0;
 
-        if (keys[37]) {self.speedX = -5; }
-        if (keys[39]) {self.speedX = 5; }
-        if (keys[38]) {self.speedY = -5; }
-        if (keys[40]) {self.speedY = 5; }
+        if (keys[37] || keys[65]) {self.speedX = -5; }
+        if (keys[39] || keys[68]) {self.speedX = 5; }
+        if (keys[38] || keys[87]) {self.speedY = -5; }
+        if (keys[40] || keys[83]) {self.speedY = 5; }
 
         if (self.x + self.speedX >= 0 && self.x + self.speedX + self.width <= 800) 
             self.x += self.speedX;
