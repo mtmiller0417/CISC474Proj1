@@ -1,5 +1,7 @@
 body {
-    background:lightgray;
+    /*background:lightgray;*/
+    /* Set background image */
+    background-image: url("Images/backgroundjpg.jpg");
 }
 
 #mainMenu {
