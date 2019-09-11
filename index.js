@@ -15,6 +15,7 @@ $(function(){
             // run update every 10 msec
             game.interval = setInterval(game.player.update, 10);
             $("#gameScreen").fadeIn();
+            getPlayerPos(game);
         });
     });
 
