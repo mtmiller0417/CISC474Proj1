@@ -14,7 +14,8 @@ $(function(){
             game.initGame();
             // run update every 10 msec
             game.interval = setInterval(game.player.update, 10);
-            game.interval = setInterval(game.enemy.update, 10);     
+            game.interval = setInterval(game.enemy.update, 10);   
+            game.interval = setInterval(game.update, 10);  
             $("#gameScreen").fadeIn();
         });
     });
@@ -52,14 +53,27 @@ function gameInstance(){
     this.enemy = undefined;
 
     // keep above?
+    this.p = undefined; /**Player */
     this.running = false;
     this.interval = undefined;
 
     this.initGame = function() {
         self.running = true;
-        self.player = new gameComponent(50, 50, 400, 300);
-        self.enemy = new enemyComponent(75, 75, 200, 100);
+        self.p = new player(50, 50, 400, 300);
+        self.enemy = new enemyComponent(75, 75, 200, 100)
     }
+
+    this.update = function() {
+        self.p.update();
+        self.enemy.update();
+
+        if (bulletId != -1){
+            $.each(bulletList, function (index, bullet) {  
+                bulletUpdate(bullet, self.p);
+             });
+        }
+    }
+        
 }
 
 
@@ -149,4 +163,9 @@ function enemyComponent(width, height, x, y){
         $("#enemy").css("left",self.x);
         $("#enemy").css("top",self.y);
     }
+}
+
+function addBullet(color, bsize, bspeed, x, y, eX, eY) {
+    bulletId = (bulletId + 1)%3;
+    bulletList[bulletId] = new bullet(bulletId, color, bsize, bspeed, x, y, eX, eY);
 }
