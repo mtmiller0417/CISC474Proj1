@@ -61,6 +61,8 @@ $(function(){
     document.body.addEventListener("keyup", function (e) {
         keys[e.keyCode] = false;
         if (e.keyCode == 32 || (e.keyCode >= 37 && e.keyCode <= 40)){
+            console.log(game.p.x);
+            console.log(game.p.y);
             canShoot = true;
         }
     });

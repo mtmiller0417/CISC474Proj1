@@ -1,10 +1,10 @@
 function getPlayerPos(game){
     var self = this;
     //Gets top left of player
-    var player_x = game.player.x;
-    var player_y = game.player.y;
-    var player_width = game.player.width;
-    var player_height = game.player.height;
+    var player_x = game.x;
+    var player_y = game.y;
+    var player_width = game.width;
+    var player_height = game.height;
     var mid_x = player_x + (player_width / 2);
     var mid_y = player_y + (player_height / 2);
     console.log("PLAYER POSx: " + player_x + " y:" + player_y);
