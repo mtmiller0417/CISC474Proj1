@@ -41,8 +41,15 @@ $(function(){
         console.log(game.p.y);
         console.log(e.clientX);
         console.log(e.clientY);
-        addBullet("black", 10, 2, game.p.x, game.p.y, e.clientX, e.clientY);
+        addBullet("black", 10, 2, game.p.x+25, game.p.y-25-(((bulletId+1)%3)*5), e.clientX-240, e.clientY-75-bulletIdOffsetY());
+        /**!!!Need to make this dynamic!!! */
+        /** Need to add offsets to game.p vars for top/bottom and left/right */
+        /** X seems to be -200 for half of gameScreen margin left (-400px) and -40 for ?*/
+        /** Y seems to be -75 for some reason? gameScreenmargin top is (-300px) so -300/4? */
+
     });
+    
+   
 
     /* Key Listeners */
     document.body.addEventListener("keydown", function (e) {
@@ -103,17 +110,17 @@ function player(width, height, x, y) {
 
         /** Directional Keys */
         if (keys[37]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x, game.p.y, game.p.x-1, game.p.y); }
+            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25-1, game.p.y-25-bulletIdOffsetY()); }
         if (keys[39]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x, game.p.y, game.p.x+1, game.p.y); }
+            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25+1, game.p.y-25-bulletIdOffsetY()); }
         if (keys[38]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x, game.p.y, game.p.x, game.p.y-1); }
+            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25, game.p.y-1-25-bulletIdOffsetY()); }
         if (keys[40]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x, game.p.y, game.p.x, game.p.y+1); }
+            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25, game.p.y+1-25-bulletIdOffsetY()); }
 
         if ((keys[32]) && canShoot){/**Space Bar Shooting */
             canShoot = false;
-            addBullet("black", 10, 2, game.p.x, game.p.y, game.p.x+1, game.p.y);
+            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25+1, game.p.y-25-bulletIdOffsetY());
         }
 
         /** Update Values */
@@ -123,8 +130,8 @@ function player(width, height, x, y) {
             self.y += self.speedY;
 
         /** Draw */
-        $("#player").css("left",self.x+40-25);
-        $("#player").css("top",self.y-25-25);
+        $("#player").css("left",self.x);
+        $("#player").css("top",self.y);
     } 
 }
 
@@ -146,6 +153,10 @@ function bullet(id, color, size, speed, x, y, eX, eY, dx, dy, mag) {
     
 }
 
+bulletIdOffsetY = function(){
+    return (((bulletId+1)%3)*5);
+}
+
 function bulletUpdate(self, player){
     /*Update Values*/             
     
@@ -153,14 +164,14 @@ function bulletUpdate(self, player){
     self.y += self.velocityY;
     /*Draw*/
     if (self.id == 0){
-        $("#bullet1").css("left",self.x+40);
-        $("#bullet1").css("top",self.y-25-50-5);
+        $("#bullet1").css("left",self.x);
+        $("#bullet1").css("top",self.y);
     } else if (self.id == 1){
-        $("#bullet2").css("left",self.x+40);
-        $("#bullet2").css("top",self.y-25-50-10);
+        $("#bullet2").css("left",self.x);
+        $("#bullet2").css("top",self.y);
     } else if (self.id == 2){
-        $("#bullet3").css("left",self.x+40);
-        $("#bullet3").css("top",self.y-25-50-15);
+        $("#bullet3").css("left",self.x);
+        $("#bullet3").css("top",self.y);
     }
 }
 

@@ -16,7 +16,8 @@ body {
     
     top: 50%;
     left: 50%;
-
+    -webkit-text-stroke-width: 1px;
+   -webkit-text-stroke-color: white;
     text-align:center;
 }
 
@@ -51,6 +52,9 @@ body {
     background:darkslategray;
     color:white;
     border-radius: 8px;
+
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
     
     text-align:center;
     font-family:arial;
@@ -117,7 +121,7 @@ body {
     top: 50%;
     left: 50%;
 
-    background:white;
+    background:whitesmoke;
     color:white;
     outline: auto;
     outline-color: black;
