@@ -12,9 +12,7 @@ $(function(){
         $("#mainMenu").slideUp("medium",function(){
             game = new gameInstance();
             game.initGame();
-            // run update every 10 msec
-            game.interval = setInterval(game.player.update, 10);
-            game.interval = setInterval(game.enemy.update, 10);   
+            // run update every 10 msec  
             game.interval = setInterval(game.update, 10);  
             $("#gameScreen").fadeIn();
         });
@@ -47,13 +45,8 @@ $(function(){
 
 function gameInstance(){
     var self = this;
-    this.player = undefined;
-    // keep below?
-
-    this.enemy = undefined;
-
-    // keep above?
     this.p = undefined; /**Player */
+    this.enemy = undefined;
     this.running = false;
     this.interval = undefined;
 
@@ -168,4 +161,5 @@ function enemyComponent(width, height, x, y){
 function addBullet(color, bsize, bspeed, x, y, eX, eY) {
     bulletId = (bulletId + 1)%3;
     bulletList[bulletId] = new bullet(bulletId, color, bsize, bspeed, x, y, eX, eY);
+    
 }
