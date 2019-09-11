@@ -1,7 +1,10 @@
 body {
-    /*background:lightgray;*/
+    background:darkslategray;
     /* Set background image */
     background-image: url("Images/backgroundjpg.jpg");
+    background-size: 100%;
+    background-repeat: no-repeat;
+    
 }
 
 #mainMenu {
@@ -13,7 +16,8 @@ body {
     
     top: 50%;
     left: 50%;
-
+    -webkit-text-stroke-width: 1px;
+   -webkit-text-stroke-color: white;
     text-align:center;
 }
 
@@ -48,6 +52,9 @@ body {
     background:darkslategray;
     color:white;
     border-radius: 8px;
+
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
     
     text-align:center;
     font-family:arial;
@@ -114,9 +121,10 @@ body {
     top: 50%;
     left: 50%;
 
-    background:white;
+    background:whitesmoke;
     color:white;
-
+    outline: auto;
+    outline-color: black;
     text-align:center;
     font-family:arial;
     font-size:30px;
@@ -124,11 +132,48 @@ body {
 
 #player {
     position:relative;
+    z-index: 0;
     height:50px;
     width:50px;
     left:0px;
     top:0px;
     
     background:darkslategray;
+    color:white;
+}
+
+#bullet1 {
+    position:relative;
+    z-index: 1;
+    height:5px;
+    width:5px;
+    left:0px;
+    top:0px;
+    
+    background:red;
+    color:white;
+}
+
+#bullet2 {
+    position:relative;
+    z-index: 2;
+    height:5px;
+    width:5px;
+    left:0px;
+    top:0px;
+    
+    background:yellow;
+    color:white;
+}
+
+#bullet3 {
+    position:relative;
+    z-index: 3;
+    height:5px;
+    width:5px;
+    left:0px;
+    top:0px;
+    
+    background:blue;
     color:white;
 }
