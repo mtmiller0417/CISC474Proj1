@@ -117,6 +117,9 @@ body {
     top: 50%;
     left: 50%;
 
+    opacity: 1.0;
+    filter: alpha(opacity=100);
+
     background:white;
     color:white;
 

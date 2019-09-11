@@ -15,7 +15,7 @@ $(function(){
             game = new gameInstance();
             game.initGame();
             // run update every 10 msec
-            game.interval = setInterval(game.player.update, 10);
+            game.interval = setInterval(game.update, 10);
             $("#gameScreen").fadeIn();
         });
     });
@@ -36,7 +36,7 @@ $(function(){
     });
 
     $("#gameScreen").mousedown(function (e) {
-        addBullet("black", 10, 2, game.player.x, game.player.y, e.clientX, e.clientY);
+        addBullet("black", 10, 2, game.p.x, game.p.y, e.clientX, e.clientY);
     });
 
     /* Key Listeners */
@@ -51,18 +51,28 @@ $(function(){
 
 function gameInstance(){
     var self = this;
-    this.player = undefined;
+    this.p = undefined;
     this.running = false;
     this.interval = undefined;
 
     this.initGame = function() {
         self.running = true;
-        self.player = new gameComponent(50, 50, 400, 300);
+        self.p = new player(50, 50, 400, 300);
+    }
+
+    this.update = function() {
+        self.p.update();
+
+        $.each(bulletList, function (index, bullet) {  
+            updateBullet(bullet, self);
+            $("#bullet").css("center",bullet.x);
+            $("#bullet").css("center",bullet.y);
+         });
     }
 }
 
 
-function gameComponent(width, height, x, y) {
+function player(width, height, x, y) {
     var self = this;
     this.width = width;
     this.height = height;
@@ -71,7 +81,7 @@ function gameComponent(width, height, x, y) {
     this.x = x;
     this.y = y;    
 
-    this.update = function() {
+    this.update = function(){ 
         self.speedX = 0;
         self.speedY = 0;
 
@@ -87,13 +97,7 @@ function gameComponent(width, height, x, y) {
 
         $("#player").css("left",self.x);
         $("#player").css("top",self.y);
-
-        $.each(bulletList, function (index, bullet) {  
-            updateBullet(bullet, self);
-            $("#bullet").css("center",bullet.x);
-            $("#bullet").css("center",bullet.y);
-         });
-    }
+    } 
 }
 
 function updateBullet(bullet, player) {
