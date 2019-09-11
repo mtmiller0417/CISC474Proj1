@@ -3,6 +3,7 @@ keys = [];
 bulletList = [3];/** Three bullets */
 var game = undefined;
 bulletId = -1;
+canShoot = true;
 
 $(function(){
     //this code runs after page is fully loaded
@@ -46,10 +47,14 @@ $(function(){
     /* Key Listeners */
     document.body.addEventListener("keydown", function (e) {
         keys[e.keyCode] = true;
+        
     });
 
     document.body.addEventListener("keyup", function (e) {
         keys[e.keyCode] = false;
+        if (e.keyCode == 32 || (e.keyCode >= 37 && e.keyCode <= 40)){
+            canShoot = true;
+        }
     });
 });
 
@@ -90,10 +95,26 @@ function player(width, height, x, y) {
         self.speedX = 0;
         self.speedY = 0;
 
-        if (keys[37] || keys[65]) {self.speedX = -5; }
-        if (keys[39] || keys[68]) {self.speedX = 5; }
-        if (keys[38] || keys[87]) {self.speedY = -5; }
-        if (keys[40] || keys[83]) {self.speedY = 5; }
+        /** ADWS Keys in order */
+        if (keys[65]) {self.speedX = -5; }
+        if (keys[68]) {self.speedX = 5; }
+        if (keys[87]) {self.speedY = -5; }
+        if (keys[83]) {self.speedY = 5; }
+
+        /** Directional Keys */
+        if (keys[37]&& canShoot) {canShoot = false;
+            addBullet("black", 10, 2, game.p.x, game.p.y, game.p.x-1, game.p.y); }
+        if (keys[39]&& canShoot) {canShoot = false;
+            addBullet("black", 10, 2, game.p.x, game.p.y, game.p.x+1, game.p.y); }
+        if (keys[38]&& canShoot) {canShoot = false;
+            addBullet("black", 10, 2, game.p.x, game.p.y, game.p.x, game.p.y-1); }
+        if (keys[40]&& canShoot) {canShoot = false;
+            addBullet("black", 10, 2, game.p.x, game.p.y, game.p.x, game.p.y+1); }
+
+        if ((keys[32]) && canShoot){/**Space Bar Shooting */
+            canShoot = false;
+            addBullet("black", 10, 2, game.p.x, game.p.y, game.p.x+1, game.p.y);
+        }
 
         /** Update Values */
         if (self.x + self.speedX >= 0 && self.x + self.speedX + self.width <= 800) 
@@ -102,8 +123,8 @@ function player(width, height, x, y) {
             self.y += self.speedY;
 
         /** Draw */
-        $("#player").css("left",self.x);
-        $("#player").css("top",self.y);
+        $("#player").css("left",self.x+40-25);
+        $("#player").css("top",self.y-25-25);
     } 
 }
 
@@ -132,14 +153,14 @@ function bulletUpdate(self, player){
     self.y += self.velocityY;
     /*Draw*/
     if (self.id == 0){
-        $("#bullet1").css("left",self.x);
-        $("#bullet1").css("top",self.y);
+        $("#bullet1").css("left",self.x+40);
+        $("#bullet1").css("top",self.y-25-50-5);
     } else if (self.id == 1){
-        $("#bullet2").css("left",self.x);
-        $("#bullet2").css("top",self.y);
+        $("#bullet2").css("left",self.x+40);
+        $("#bullet2").css("top",self.y-25-50-10);
     } else if (self.id == 2){
-        $("#bullet3").css("left",self.x);
-        $("#bullet3").css("top",self.y);
+        $("#bullet3").css("left",self.x+40);
+        $("#bullet3").css("top",self.y-25-50-15);
     }
 }
 
