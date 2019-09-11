@@ -1,8 +1,8 @@
 /* Global Vars */
 keys = [];
-bulletList = [];
+bulletList = [3];/** Three bullets */
 var game = undefined;
-bulletId = 0;
+bulletId = -1;
 
 $(function(){
     //this code runs after page is fully loaded
@@ -36,6 +36,10 @@ $(function(){
     });
 
     $("#gameScreen").mousedown(function (e) {
+        console.log(game.p.x);
+        console.log(game.p.y);
+        console.log(e.clientX);
+        console.log(e.clientY);
         addBullet("black", 10, 2, game.p.x, game.p.y, e.clientX, e.clientY);
     });
 
@@ -51,7 +55,7 @@ $(function(){
 
 function gameInstance(){
     var self = this;
-    this.p = undefined;
+    this.p = undefined; /**Player */
     this.running = false;
     this.interval = undefined;
 
@@ -63,11 +67,12 @@ function gameInstance(){
     this.update = function() {
         self.p.update();
 
-        $.each(bulletList, function (index, bullet) {  
-            updateBullet(bullet, self);
-            $("#bullet").css("center",bullet.x);
-            $("#bullet").css("center",bullet.y);
-         });
+        if (bulletId != -1){
+            $.each(bulletList, function (index, bullet) {  
+                bulletUpdate(bullet, self.p);
+             });
+        }
+        
     }
 }
 
@@ -90,27 +95,20 @@ function player(width, height, x, y) {
         if (keys[38] || keys[87]) {self.speedY = -5; }
         if (keys[40] || keys[83]) {self.speedY = 5; }
 
+        /** Update Values */
         if (self.x + self.speedX >= 0 && self.x + self.speedX + self.width <= 800) 
             self.x += self.speedX;
         if (self.y + self.speedY >= 0 && self.y + self.speedY + self.height <= 600)
             self.y += self.speedY;
 
+        /** Draw */
         $("#player").css("left",self.x);
         $("#player").css("top",self.y);
     } 
 }
 
-function updateBullet(bullet, player) {
-    var dx = (bullet.eX - player.x);
-    var dy = (bullet.eY - player.y);
-    var mag = Math.sqrt(dx * dx + dy * dy);              
-    bullet.velocityX = (dx / mag) * bullet.speed;
-    bullet.velocityY = (dy / mag) * bullet.speed;
-    bullet.x += bullet.velocityX;
-    bullet.y += bullet.velocityY;
-}
-
-function bullet(id, color, size, speed, x, y, eX, eY) {
+function bullet(id, color, size, speed, x, y, eX, eY, dx, dy, mag) {
+    var self = this;
     this.id = id;           
     this.color = color;
     this.size = size;
@@ -118,12 +116,35 @@ function bullet(id, color, size, speed, x, y, eX, eY) {
     this.y = y;
     this.eX = eX;
     this.eY = eY;
-    this.velocityX;
-    this.velocityY;
+    var dx = (self.eX - self.x);
+    var dy = (self.eY - self.y);
+    var mag = Math.sqrt(dx * dx + dy * dy);
     this.speed = speed;
+    this.velocityX = (dx / mag) * self.speed;
+    this.velocityY = (dy / mag) * self.speed;
+    
+}
+
+function bulletUpdate(self, player){
+    /*Update Values*/             
+    
+    self.x += self.velocityX;
+    self.y += self.velocityY;
+    /*Draw*/
+    if (self.id == 0){
+        $("#bullet1").css("left",self.x);
+        $("#bullet1").css("top",self.y);
+    } else if (self.id == 1){
+        $("#bullet2").css("left",self.x);
+        $("#bullet2").css("top",self.y);
+    } else if (self.id == 2){
+        $("#bullet3").css("left",self.x);
+        $("#bullet3").css("top",self.y);
+    }
 }
 
 function addBullet(color, bsize, bspeed, x, y, eX, eY) {
+    bulletId = (bulletId + 1)%3;
     bulletList[bulletId] = new bullet(bulletId, color, bsize, bspeed, x, y, eX, eY);
-    bulletId = (bulletId + 1)%100;
+    
 }

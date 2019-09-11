@@ -1,5 +1,5 @@
 body {
-    /*background:lightgray;*/
+    background:darkslategray;
     /* Set background image */
     background-image: url("Images/backgroundjpg.jpg");
     background-size: 100%;
@@ -136,13 +136,35 @@ body {
     color:white;
 }
 
-#bullet {
+#bullet1 {
     position:relative;
     height:5px;
     width:5px;
     left:0px;
     top:0px;
     
-    background:darkslategray;
+    background:red;
+    color:white;
+}
+
+#bullet2 {
+    position:relative;
+    height:5px;
+    width:5px;
+    left:0px;
+    top:0px;
+    
+    background:yellow;
+    color:white;
+}
+
+#bullet3 {
+    position:relative;
+    height:5px;
+    width:5px;
+    left:0px;
+    top:0px;
+    
+    background:blue;
     color:white;
 }
