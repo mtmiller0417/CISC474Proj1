@@ -18,7 +18,6 @@ $(function(){
             // run update every 10 msec
             game.interval = setInterval(game.update, 10);
             $("#gameScreen").fadeIn();
-            getPlayerPos(game);
         });
     });
 
@@ -77,11 +76,12 @@ function gameInstance(){
     this.initGame = function() {
         self.running = true;
         self.p = new player(50, 50, 400, 300);
+        self.enemy = new enemy(75, 75, 0, 0);
     }
 
     this.update = function() {
         self.p.update();
-
+        self.enemy.update();
         if (bulletId != -1){
             $.each(bulletList, function (index, bullet) {  
                 bulletUpdate(bullet, self.p);
@@ -184,19 +184,21 @@ function addBullet(color, bsize, bspeed, x, y, eX, eY) {
     
 }
 
+// Enemy code below here
+
 function getPlayerX(){
-    player_x = game.player.x;
-    mid_x =  player_x + (game.player.width / 2);
+    player_x = game.p.x;
+    mid_x =  player_x + (game.p.width / 2);
     return mid_x;
 }
 
 function getPlayerY(){
-    player_y = game.player.y;
-    mid_y =  player_y + (game.player.height / 2);
+    player_y = game.p.y;
+    mid_y =  player_y + (game.p.height / 2);
     return mid_y;
 }
 
-function enemyComponent(width, height, x, y){
+function enemy(width, height, x, y){
     var self = this;
     this.width = width;
     this.height = height;
