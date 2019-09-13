@@ -87,10 +87,16 @@ function gameInstance(){
                 bulletUpdate(bullet, self.p);
              });
         }
-        
+        var collision = checkCollision(self.p.x, self.p.y, self.p.width, self.p.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height);
+        if(collision){
+            // Take damage OR send to end game screen OR send to start
+            clearInterval(game.interval);
+                $("#gameScreen").fadeOut("medium",function(){
+                $("#mainMenu").slideDown();
+            });
+        }
     }
 }
-
 
 function player(width, height, x, y) {
     var self = this;
