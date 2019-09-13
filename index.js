@@ -4,6 +4,8 @@ bulletList = [3];/** Three bullets */
 var game = undefined;
 bulletId = -1;
 canShoot = true;
+imageNumber = 0;
+imageTimer = 0;
 
 $(function(){
     //this code runs after page is fully loaded
@@ -105,25 +107,54 @@ function player(width, height, x, y) {
         self.speedX = 0;
         self.speedY = 0;
 
+
+if(imageTimer == 0){    //prevents image from changing every update b/c it was too fast
+        var str = '';
+        var pic = str.concat("url('Images/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_", imageNumber, ".png')");
+
+        console.log(pic);
+
+        imageNumber += 1;
+        imageNumber = imageNumber % 20;
+
+        $("#player").css('background-image', pic);
+    }
+    imageTimer += 1;
+    imageTimer = imageTimer%4;
+        
+
         /** ADWS Keys in order */
-        if (keys[65]) {self.speedX = -5; }
-        if (keys[68]) {self.speedX = 5; }
-        if (keys[87]) {self.speedY = -5; }
-        if (keys[83]) {self.speedY = 5; }
+        if (keys[65]) {self.speedX = -5; $("#player").css('transform', 'rotate(180deg)');}
+        if (keys[68]) {self.speedX = 5;$("#player").css('transform', 'rotate(0deg)');}
+        if (keys[87]) {self.speedY = -5; $("#player").css('transform', 'rotate(270deg)');}
+        if (keys[83]) {self.speedY = 5; $("#player").css('transform', 'rotate(90deg)');}
+
+        if (keys[65] && keys[83]){
+            $("#player").css('transform', 'rotate(120deg)');
+        }
+        if (keys[65] && keys[87]){
+            $("#player").css('transform', 'rotate(240deg)');
+        }
+        if (keys[68] && keys[83]){
+            $("#player").css('transform', 'rotate(60deg)');
+        }
+        if (keys[68] && keys[87]){
+            $("#player").css('transform', 'rotate(300deg)');
+        }
 
         /** Directional Keys */
         if (keys[37]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25-1, game.p.y-25-bulletIdOffsetY()); }
+            addBullet("black", 10, 7, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25-1, game.p.y-25-bulletIdOffsetY()); }
         if (keys[39]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25+1, game.p.y-25-bulletIdOffsetY()); }
+            addBullet("black", 10, 7, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25+1, game.p.y-25-bulletIdOffsetY()); }
         if (keys[38]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25, game.p.y-1-25-bulletIdOffsetY()); }
+            addBullet("black", 10, 7, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25, game.p.y-1-25-bulletIdOffsetY()); }
         if (keys[40]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25, game.p.y+1-25-bulletIdOffsetY()); }
+            addBullet("black", 10, 7, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25, game.p.y+1-25-bulletIdOffsetY()); }
 
         if ((keys[32]) && canShoot){/**Space Bar Shooting */
             canShoot = false;
-            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25+1, game.p.y-25-bulletIdOffsetY());
+            addBullet("black", 10, 7, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25+1, game.p.y-25-bulletIdOffsetY());
         }
 
         /** Update Values */
