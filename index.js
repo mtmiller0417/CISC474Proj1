@@ -105,7 +105,9 @@ function player(width, height, x, y) {
     this.speedX = 0;
     this.speedY = 0;    
     this.x = x;
-    this.y = y;    
+    this.y = y;
+    this.currHealth = 100;
+    this.maxHealth = 100;
 
     this.update = function(){ 
         self.speedX = 0;
@@ -141,6 +143,9 @@ function player(width, height, x, y) {
         /** Draw */
         $("#player").css("left",self.x);
         $("#player").css("top",self.y);
+
+        $("#playerHealthBox").css("left",self.x);
+        $("#playerHealthBox").css("top",self.y - 15);
     } 
 }
 

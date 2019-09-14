@@ -142,6 +142,48 @@ body {
     color:white;
 }
 
+.healthBox {
+    position:absolute;
+    height: 8px;
+    width: 50px;
+    left:0px;
+    top:0px;
+
+    text-align:center;
+
+    background:lightgray;
+    outline: solid 3px gold;
+}
+
+.healthBox p {
+    position:absolute;
+
+    color:black;
+    
+    font-family:arial;
+    font-size:12px;
+}
+
+.healthBar {
+    position:absolute;
+    height: 8px;
+    width: 50px;
+    left:0px;
+    top:0px;
+
+    background-color:rgb(100, 255, 100);
+}
+
+.damageBar {
+    position:absolute;
+    height: 8px;
+    width: 50px;
+    left:0px;
+    top:0px;
+
+    background-color:rgb(255, 100, 100);
+}
+
 #enemy {
     display:flex;
     position:absolute; /* Should this be absolute??? or relative? */
