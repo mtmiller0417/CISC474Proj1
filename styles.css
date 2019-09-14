@@ -155,15 +155,6 @@ body {
     outline: solid 3px gold;
 }
 
-.healthBox p {
-    position:absolute;
-
-    color:black;
-    
-    font-family:arial;
-    font-size:12px;
-}
-
 .healthBar {
     position:absolute;
     height: 8px;
@@ -182,6 +173,19 @@ body {
     top:0px;
 
     background-color:rgb(255, 100, 100);
+}
+
+.healthText {
+    position:absolute;
+    height: 8px;
+    width: 50px;
+    top:-5px;
+
+    color:black;
+
+    text-align:center;
+    font-family:arial;
+    font-size:16px;
 }
 
 #enemy {
