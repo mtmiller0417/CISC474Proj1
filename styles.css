@@ -207,33 +207,9 @@ body {
     color:black;
 }
 
-#bullet1 {
-    position:relative;
-    z-index: 1;
-    height:5px;
-    width:5px;
-    left:0px;
-    top:0px;
-    
-    background:red;
-    color:white;
-}
-
-#bullet2 {
-    position:relative;
-    z-index: 2;
-    height:5px;
-    width:5px;
-    left:0px;
-    top:0px;
-    
-    background:yellow;
-    color:white;
-}
-
-#bullet3 {
-    position:relative;
-    z-index: 3;
+.bullet {
+    position:absolute;
+    z-index: 0;
     height:5px;
     width:5px;
     left:0px;
