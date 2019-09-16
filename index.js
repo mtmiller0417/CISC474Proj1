@@ -20,7 +20,6 @@ $(function(){
             // run update every 10 msec
             game.interval = setInterval(game.update, 10);
             $("#gameScreen").fadeIn();
-            getPlayerPos(game);
         });
     });
 
@@ -65,22 +64,43 @@ function gameInstance(){
 
     this.initGame = function() {
         self.running = true;
+
         self.p = new player(50, 50, 400, 300);
+        var pctHealth = Math.round(self.p.currHealth * (100/self.p.maxHealth));
+        $("#playerHealthText").html(pctHealth + "%");
+        $("#playerDamageBar").css("width", pctHealth + "%");
+        $("#playerHealthBar").css("width", pctHealth + "%");
+
+        self.enemy = new enemy(75, 75, 0, 0);
     }
 
     this.update = function() {
         self.p.update();
-    var tmp;
-    var tmp2 = bulletId;
-    $(document).off('keydown keyup');
-    for (var i = 0; i < tmp2-numBulletsRemoved; i++){
+
+        self.enemy.update();
+        var tmp;
+        var tmp2 = bulletId;
+        $(document).off('keydown keyup');
+        for (var i = 0; i < tmp2-numBulletsRemoved; i++){
         tmp = numBulletsRemoved;
         console.log(i + " "+tmp+" "+numBulletsRemoved);
         updateBullet(bulletList[i]);
         if (numBulletsRemoved > tmp) 
         console.log(i + " "+tmp+" "+numBulletsRemoved);
-    }
-    $(document).on('keydown keyup');
+        }
+        $(document).on('keydown keyup');
+        var collision = checkCollision(self.p.x, self.p.y, self.p.width, self.p.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height);
+        if(collision){
+            // Take damage OR send to end game screen OR send to start
+            self.p.takeDamage(25);
+
+            if(self.p.currHealth <= 0){
+                clearInterval(game.interval);
+                $("#gameScreen").fadeOut("medium",function(){
+                    $("#mainMenu").slideDown();
+                });
+            }
+        }
     }
 }
 
@@ -91,7 +111,10 @@ function player(width, height, x, y) {
     this.speedX = 0;
     this.speedY = 0;    
     this.x = x;
-    this.y = y;    
+    this.y = y;
+    this.currHealth = 100;
+    this.maxHealth = 100;
+    this.invulnerableFrames = 0;
 
     this.update = function(){ 
         self.speedX = 0;
@@ -127,7 +150,50 @@ function player(width, height, x, y) {
         /** Draw */
         $("#player").css("left",self.x);
         $("#player").css("top",self.y);
-    } 
+
+        $("#playerHealthBox").css("left",self.x);
+        $("#playerHealthBox").css("top",self.y - 15);
+
+        /** Invulnerability Indicators */
+        if (self.invulnerableFrames > 0) {
+            self.invulnerableFrames -= 1;
+            $("#playerHealthBox").css("outline","solid 4px gold");
+        }
+        else {
+            $("#playerHealthBox").css("outline","none");
+        }
+
+        if (self.invulnerableFrames % 20 < 10) {
+            $("#player").css("opacity",1);
+        }
+        else {
+            $("#player").css("opacity",0);
+        }
+    }
+    
+    this.takeDamage = function(dmg) {
+        /** If invulnerable, don't do anything */
+        if (self.invulnerableFrames > 0)
+            return;
+
+        /** Otherwise take damage, draw HealthBox elements */
+        if (self.currHealth - dmg < 0) {
+            self.currHealth = 0;
+        }
+        else {
+            self.currHealth = self.currHealth - dmg;
+        }
+
+        var pctHealth = Math.round(self.currHealth * (100/self.maxHealth));
+        $("#playerHealthText").html(pctHealth + "%");
+        $("#playerDamageBar").animate({
+            width: pctHealth + "%"
+        },
+        1000);
+        $("#playerHealthBar").css("width", pctHealth + "%");
+
+        self.invulnerableFrames = 100;
+    }
 }
 
 function bullet(ref, id, x, y, xDir, yDir) {
@@ -180,4 +246,65 @@ function addBullet(x, y, xDir, yDir) {
     $(bulletList[bulletId-numBulletsRemoved].ref).css("left", x);
     $(bulletList[bulletId-numBulletsRemoved].ref).css("top", y);
     bulletId++;
+    
+}
+
+// Enemy code below here
+
+function getPlayerX(){
+    player_x = game.p.x;
+    mid_x =  player_x + (game.p.width / 2);
+    return mid_x;
+}
+
+function getPlayerY(){
+    player_y = game.p.y;
+    mid_y =  player_y + (game.p.height / 2);
+    return mid_y;
+}
+
+function enemy(width, height, x, y){
+    var self = this;
+    this.width = width;
+    this.height = height;
+    this.speedX = 0;
+    this.speedY = 0;
+    this.moveInc = 2;
+    this.x = x;
+    this.y = y;
+
+    this.update = function() {
+        self.speedX = 0;
+        self.speedY = 0;
+        var player_x = getPlayerX();
+        var player_y = getPlayerY();
+        var left = false, right = false, up = false, down = false; // Set booleans
+
+        //Try manhatten distance ... 
+        var x_mid = self.x + self.width/2;
+        var y_mid = self.y + self.height/2;
+        var x_distance = x_mid - player_x;
+        var y_distance = y_mid - player_y;
+
+        if(Math.abs(x_distance) >= Math.abs(y_distance)){
+            // Move x direction
+            if(x_mid > player_x) { self.speedX = 0 - self.moveInc; } // Move left
+            else if(x_mid < player_x) { self.speedX = self.moveInc; } // Move right
+            // Check the bounds
+            if (self.x + self.speedX >= 0 && self.x + self.speedX + self.height <= 800)          
+                self.x += self.speedX;
+        }
+        else{
+            // Move y direction
+            if(y_mid > player_y) { self.speedY = 0 - self.moveInc; } // Move down
+            else if(y_mid < player_y) { self.speedY = self.moveInc; } // Move up
+            // Check the bounds
+            if (self.y + self.speedY >= 0 && self.y + self.speedY + self.height <= 600)
+                self.y += self.speedY;
+        }
+         
+        // Update the css to show the movement
+        $("#enemy").css("left",self.x);
+        $("#enemy").css("top",self.y);
+    }
 }

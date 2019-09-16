@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="styles.css">
         <script src="http://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
         <script src='index.js'></script>   
-        <script src='enemy.js'></script>
+        <script src='collision.js'></script>
     </head>
     
     <body>
@@ -29,6 +29,12 @@
 
         <div id="gameScreen">
             <div id="player"></div>
+            <div id="playerHealthBox" class="healthBox">
+                <div id="playerDamageBar" class="damageBar"></div>
+                <div id="playerHealthBar" class="healthBar"></div>
+                <div id="playerHealthText" class="healthText"></div>
+            </div>
+            <div id="enemy"></div>
             <button id="returnBtn" class="btn">RETURN</button>
         </div>
         
