@@ -133,13 +133,22 @@ body {
 #player {
     position:relative;
     z-index: 0;
-    height:50px;
-    width:50px;
+    /*height:50px;
+    width:50px;*/
+    height: 140px;
+    width: 108px;
     left:0px;
     top:0px;
     
-    background:darkslategray;
-    color:white;
+    /*background:darkslategray;
+    color:white;*/
+    background: url("Images/character_sprite.png");
+    animation: player-run-right 0.7s steps(8) infinite;
+}
+
+@keyframes player-run-right {
+    from {background-position: 0px 0px;}
+    to {background-position: 0px -864px;}
 }
 
 #enemy {
