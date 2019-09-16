@@ -6,6 +6,7 @@ bulletId = 0;
 numBulletsRemoved = 0;
 bulletSpeed = 10;
 canShoot = true;
+var olde;
 
 $(function(){
     //this code runs after page is fully loaded
@@ -45,12 +46,13 @@ $(function(){
             /**do nothing */
         }else {
             keys[e.keyCode] = true;
+            olde = e.keyCode;
         }
     });
 
     document.body.addEventListener("keyup", function (e) {
         keys[e.keyCode] = false;
-        if (e.keyCode == 32 || (e.keyCode >= 37 && e.keyCode <= 40)){
+        if ((e.keyCode == 32 || (e.keyCode >= 37 && e.keyCode <= 40)) && e.keyCode==olde){
             canShoot = true;
         }
     });
@@ -81,14 +83,11 @@ function gameInstance(){
         var tmp;
         var tmp2 = bulletId;
         $(document).off('keydown keyup');
-        for (var i = 0; i < tmp2-numBulletsRemoved; i++){
-        tmp = numBulletsRemoved;
-        console.log(i + " "+tmp+" "+numBulletsRemoved);
+        for (var i = 0; i < bulletId-numBulletsRemoved; i++){
         updateBullet(bulletList[i]);
-        if (numBulletsRemoved > tmp) 
-        console.log(i + " "+tmp+" "+numBulletsRemoved);
         }
         $(document).on('keydown keyup');
+
         var collision = checkCollision(self.p.x, self.p.y, self.p.width, self.p.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height);
         if(collision){
             // Take damage OR send to end game screen OR send to start
@@ -99,6 +98,13 @@ function gameInstance(){
                 $("#gameScreen").fadeOut("medium",function(){
                     $("#mainMenu").slideDown();
                 });
+            }
+        }
+        /**Adding Bullet Check Collision */
+        for (var i = 0; i < bulletId-numBulletsRemoved; i++){
+            var b = bulletList[i];
+            if (checkCollision(b.x, b.y, b.width, b.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height)){
+                console.log("Hit!");
             }
         }
     }
@@ -204,6 +210,8 @@ function bullet(ref, id, x, y, xDir, yDir) {
     this.y = y;
     this.xDir = xDir;
     this.yDir = yDir;
+    this.width = 5;
+    this.height = 5;
 
     
 }
@@ -223,7 +231,7 @@ function updateBullet(b){
             $(b.ref).css("top",b.y);
 
         }else{
-            console.log("#bullet"+b.id);
+            // console.log("#bullet"+b.id);
             $("#bullet"+b.id).remove();
             bulletList.splice(b.id-numBulletsRemoved, 1);
             numBulletsRemoved++;
@@ -231,7 +239,7 @@ function updateBullet(b){
         } 
 
     }else {
-        console.log("#bullet"+b.id);
+        // console.log("#bullet"+b.id);
         $("#bullet"+b.id).remove();
         bulletList.splice(b.id-numBulletsRemoved, 1);
         numBulletsRemoved++;
@@ -240,7 +248,7 @@ function updateBullet(b){
 }
 
 function addBullet(x, y, xDir, yDir) {
-    console.log("<div class='bullet' id= 'bullet"+bulletId+"'></div>");
+    // console.log("<div class='bullet' id= 'bullet"+bulletId+"'></div>");
     bulletList[bulletId-numBulletsRemoved]= new bullet ($("<div class='bullet' id= 'bullet"+bulletId+"'></div>").appendTo('#gameScreen'),
                         bulletId, x, y, xDir, yDir);
     $(bulletList[bulletId-numBulletsRemoved].ref).css("left", x);
@@ -307,4 +315,5 @@ function enemy(width, height, x, y){
         $("#enemy").css("left",self.x);
         $("#enemy").css("top",self.y);
     }
+
 }
