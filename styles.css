@@ -140,25 +140,29 @@ body {
     
     background:darkslategray;
     color:white;
+
+    opacity:1;
 }
 
 .healthBox {
     position:absolute;
-    height: 8px;
-    width: 50px;
-    left:0px;
-    top:0px;
+    z-index: 1;
+    height: 12px;
+    width: 80px;
+    margin-left:-15px;
+    margin-top:-5px;
 
     text-align:center;
 
     background:lightgray;
-    outline: solid 3px gold;
+    outline: none;
 }
 
 .healthBar {
     position:absolute;
-    height: 8px;
-    width: 50px;
+    z-index: 3;
+    height: 100%;
+    width: 100%;
     left:0px;
     top:0px;
 
@@ -167,8 +171,9 @@ body {
 
 .damageBar {
     position:absolute;
-    height: 8px;
-    width: 50px;
+    z-index: 2;
+    height: 100%;
+    width: 100%;
     left:0px;
     top:0px;
 
@@ -177,9 +182,11 @@ body {
 
 .healthText {
     position:absolute;
+    z-index: 4;
     height: 8px;
     width: 50px;
-    top:-5px;
+    top:-3px;
+    margin-left:15px;
 
     color:black;
 

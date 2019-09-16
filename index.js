@@ -75,7 +75,13 @@ function gameInstance(){
 
     this.initGame = function() {
         self.running = true;
+
         self.p = new player(50, 50, 400, 300);
+        var pctHealth = Math.round(self.p.currHealth * (100/self.p.maxHealth));
+        $("#playerHealthText").html(pctHealth + "%");
+        $("#playerDamageBar").css("width", pctHealth + "%");
+        $("#playerHealthBar").css("width", pctHealth + "%");
+
         self.enemy = new enemy(75, 75, 0, 0);
     }
 
@@ -90,10 +96,14 @@ function gameInstance(){
         var collision = checkCollision(self.p.x, self.p.y, self.p.width, self.p.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height);
         if(collision){
             // Take damage OR send to end game screen OR send to start
-            clearInterval(game.interval);
+            self.p.takeDamage(25);
+
+            if(self.p.currHealth <= 0){
+                clearInterval(game.interval);
                 $("#gameScreen").fadeOut("medium",function(){
-                $("#mainMenu").slideDown();
-            });
+                    $("#mainMenu").slideDown();
+                });
+            }
         }
     }
 }
@@ -108,6 +118,7 @@ function player(width, height, x, y) {
     this.y = y;
     this.currHealth = 100;
     this.maxHealth = 100;
+    this.invulnerableFrames = 0;
 
     this.update = function(){ 
         self.speedX = 0;
@@ -146,7 +157,47 @@ function player(width, height, x, y) {
 
         $("#playerHealthBox").css("left",self.x);
         $("#playerHealthBox").css("top",self.y - 15);
-    } 
+
+        /** Invulnerability Indicators */
+        if (self.invulnerableFrames > 0) {
+            self.invulnerableFrames -= 1;
+            $("#playerHealthBox").css("outline","solid 4px gold");
+        }
+        else {
+            $("#playerHealthBox").css("outline","none");
+        }
+
+        if (self.invulnerableFrames % 20 < 10) {
+            $("#player").css("opacity",1);
+        }
+        else {
+            $("#player").css("opacity",0);
+        }
+    }
+    
+    this.takeDamage = function(dmg) {
+        /** If invulnerable, don't do anything */
+        if (self.invulnerableFrames > 0)
+            return;
+
+        /** Otherwise take damage, draw HealthBox elements */
+        if (self.currHealth - dmg < 0) {
+            self.currHealth = 0;
+        }
+        else {
+            self.currHealth = self.currHealth - dmg;
+        }
+
+        var pctHealth = Math.round(self.currHealth * (100/self.maxHealth));
+        $("#playerHealthText").html(pctHealth + "%");
+        $("#playerDamageBar").animate({
+            width: pctHealth + "%"
+        },
+        1000);
+        $("#playerHealthBar").css("width", pctHealth + "%");
+
+        self.invulnerableFrames = 100;
+    }
 }
 
 function bullet(id, color, size, speed, x, y, eX, eY, dx, dy, mag) {
