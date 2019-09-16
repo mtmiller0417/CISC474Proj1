@@ -1,8 +1,10 @@
 /* Global Vars */
 keys = [];
-bulletList = [3];/** Three bullets */
+bulletList = [];
 var game = undefined;
-bulletId = -1;
+bulletId = 0;
+numBulletsRemoved = 0;
+bulletSpeed = 10;
 canShoot = true;
 
 $(function(){
@@ -36,32 +38,19 @@ $(function(){
         });
     });
 
-    $("#gameScreen").mousedown(function (e) {
-        console.log(game.p.x);
-        console.log(game.p.y);
-        console.log(e.clientX);
-        console.log(e.clientY);
-        addBullet("black", 10, 2, game.p.x+25, game.p.y-25-(((bulletId+1)%3)*5), e.clientX-240, e.clientY-75-bulletIdOffsetY());
-        /**!!!Need to make this dynamic!!! */
-        /** Need to add offsets to game.p vars for top/bottom and left/right */
-        /** X seems to be -200 for half of gameScreen margin left (-400px) and -40 for ?*/
-        /** Y seems to be -75 for some reason? gameScreenmargin top is (-300px) so -300/4? */
-
-    });
-    
-   
-
     /* Key Listeners */
     document.body.addEventListener("keydown", function (e) {
-        keys[e.keyCode] = true;
         
+        if ((e.keyCode >= 37 && e.keyCode <= 40) && (keys[37]||keys[38]||keys[39]||keys[40])){
+            /**do nothing */
+        }else {
+            keys[e.keyCode] = true;
+        }
     });
 
     document.body.addEventListener("keyup", function (e) {
         keys[e.keyCode] = false;
         if (e.keyCode == 32 || (e.keyCode >= 37 && e.keyCode <= 40)){
-            console.log(game.p.x);
-            console.log(game.p.y);
             canShoot = true;
         }
     });
@@ -87,12 +76,19 @@ function gameInstance(){
 
     this.update = function() {
         self.p.update();
+
         self.enemy.update();
-        if (bulletId != -1){
-            $.each(bulletList, function (index, bullet) {  
-                bulletUpdate(bullet, self.p);
-             });
+        var tmp;
+        var tmp2 = bulletId;
+        $(document).off('keydown keyup');
+        for (var i = 0; i < tmp2-numBulletsRemoved; i++){
+        tmp = numBulletsRemoved;
+        console.log(i + " "+tmp+" "+numBulletsRemoved);
+        updateBullet(bulletList[i]);
+        if (numBulletsRemoved > tmp) 
+        console.log(i + " "+tmp+" "+numBulletsRemoved);
         }
+        $(document).on('keydown keyup');
         var collision = checkCollision(self.p.x, self.p.y, self.p.width, self.p.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height);
         if(collision){
             // Take damage OR send to end game screen OR send to start
@@ -132,17 +128,17 @@ function player(width, height, x, y) {
 
         /** Directional Keys */
         if (keys[37]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25-1, game.p.y-25-bulletIdOffsetY()); }
+            addBullet(game.p.x+25, game.p.y+25, -1, 0); }
         if (keys[39]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25+1, game.p.y-25-bulletIdOffsetY()); }
+            addBullet(game.p.x+25, game.p.y+25, 1, 0); }
         if (keys[38]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25, game.p.y-1-25-bulletIdOffsetY()); }
+            addBullet(game.p.x+25, game.p.y+25, 0, -1); }
         if (keys[40]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25, game.p.y+1-25-bulletIdOffsetY()); }
+            addBullet(game.p.x+25, game.p.y+25, 0, 1); }
 
         if ((keys[32]) && canShoot){/**Space Bar Shooting */
             canShoot = false;
-            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25+1, game.p.y-25-bulletIdOffsetY());
+            addBullet(game.p.x+25, game.p.y-25, 1, 0);
         }
 
         /** Update Values */
@@ -200,49 +196,56 @@ function player(width, height, x, y) {
     }
 }
 
-function bullet(id, color, size, speed, x, y, eX, eY, dx, dy, mag) {
+function bullet(ref, id, x, y, xDir, yDir) {
     var self = this;
+    this.ref = ref
     this.id = id;           
-    this.color = color;
-    this.size = size;
     this.x = x;
     this.y = y;
-    this.eX = eX;
-    this.eY = eY;
-    var dx = (self.eX - self.x);
-    var dy = (self.eY - self.y);
-    var mag = Math.sqrt(dx * dx + dy * dy);
-    this.speed = speed;
-    this.velocityX = (dx / mag) * self.speed;
-    this.velocityY = (dy / mag) * self.speed;
+    this.xDir = xDir;
+    this.yDir = yDir;
+
     
 }
 
-bulletIdOffsetY = function(){
-    return (((bulletId+1)%3)*5);
-}
-
-function bulletUpdate(self, player){
-    /*Update Values*/             
+function updateBullet(b){
     
-    self.x += self.velocityX;
-    self.y += self.velocityY;
-    /*Draw*/
-    if (self.id == 0){
-        $("#bullet1").css("left",self.x);
-        $("#bullet1").css("top",self.y);
-    } else if (self.id == 1){
-        $("#bullet2").css("left",self.x);
-        $("#bullet2").css("top",self.y);
-    } else if (self.id == 2){
-        $("#bullet3").css("left",self.x);
-        $("#bullet3").css("top",self.y);
+    /** Update Values */
+    /*console.log(b.id);*/
+    if (b.x + b.xDir*bulletSpeed >= 0 && b.x + b.xDir*bulletSpeed + 5 <= 800) {
+        b.x += b.xDir*bulletSpeed;
+
+        if (b.y + b.yDir*bulletSpeed >= 0 && b.y + b.yDir*bulletSpeed + 5 <= 600){
+            b.y += b.yDir*bulletSpeed;
+
+            /*Draw*/
+            $(b.ref).css("left",b.x);
+            $(b.ref).css("top",b.y);
+
+        }else{
+            console.log("#bullet"+b.id);
+            $("#bullet"+b.id).remove();
+            bulletList.splice(b.id-numBulletsRemoved, 1);
+            numBulletsRemoved++;
+        
+        } 
+
+    }else {
+        console.log("#bullet"+b.id);
+        $("#bullet"+b.id).remove();
+        bulletList.splice(b.id-numBulletsRemoved, 1);
+        numBulletsRemoved++;
+    
     }
 }
 
-function addBullet(color, bsize, bspeed, x, y, eX, eY) {
-    bulletId = (bulletId + 1)%3;
-    bulletList[bulletId] = new bullet(bulletId, color, bsize, bspeed, x, y, eX, eY);
+function addBullet(x, y, xDir, yDir) {
+    console.log("<div class='bullet' id= 'bullet"+bulletId+"'></div>");
+    bulletList[bulletId-numBulletsRemoved]= new bullet ($("<div class='bullet' id= 'bullet"+bulletId+"'></div>").appendTo('#gameScreen'),
+                        bulletId, x, y, xDir, yDir);
+    $(bulletList[bulletId-numBulletsRemoved].ref).css("left", x);
+    $(bulletList[bulletId-numBulletsRemoved].ref).css("top", y);
+    bulletId++;
     
 }
 
