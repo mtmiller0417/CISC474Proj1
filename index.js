@@ -4,7 +4,7 @@ bulletList = [];
 var game = undefined;
 bulletId = 0;
 numBulletsRemoved = 0;
-bulletSpeed = 2;
+bulletSpeed = 10;
 canShoot = true;
 
 $(function(){
@@ -41,8 +41,12 @@ $(function(){
 
     /* Key Listeners */
     document.body.addEventListener("keydown", function (e) {
-        keys[e.keyCode] = true;
         
+        if ((e.keyCode >= 37 && e.keyCode <= 40) && (keys[37]||keys[38]||keys[39]||keys[40])){
+            /**do nothing */
+        }else {
+            keys[e.keyCode] = true;
+        }
     });
 
     document.body.addEventListener("keyup", function (e) {
@@ -68,6 +72,7 @@ function gameInstance(){
         self.p.update();
     var tmp;
     var tmp2 = bulletId;
+    $(document).off('keydown keyup');
     for (var i = 0; i < tmp2-numBulletsRemoved; i++){
         tmp = numBulletsRemoved;
         console.log(i + " "+tmp+" "+numBulletsRemoved);
@@ -75,6 +80,7 @@ function gameInstance(){
         if (numBulletsRemoved > tmp) 
         console.log(i + " "+tmp+" "+numBulletsRemoved);
     }
+    $(document).on('keydown keyup');
     }
 }
 
