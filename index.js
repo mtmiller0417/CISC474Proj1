@@ -105,6 +105,9 @@ function gameInstance(){
             var b = bulletList[i];
             if (checkCollision(b.x, b.y, b.width, b.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height)){
                 console.log("Hit!");
+                $("#bullet"+b.id).remove();
+                bulletList.splice(b.id-numBulletsRemoved, 1);
+                numBulletsRemoved++;
             }
         }
     }
