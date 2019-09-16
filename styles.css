@@ -144,6 +144,18 @@ body {
     background-repeat: no-repeat;
 }
 
+#enemy {
+    display:flex;
+    position:absolute; /* Should this be absolute??? or relative? */
+    height:75px;
+    width:75px;
+    left:0px;
+    top:0px;
+
+    background: red;
+    color:black;
+}
+
 
 #bullet1 {
     position:relative;
