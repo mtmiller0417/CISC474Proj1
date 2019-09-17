@@ -8,6 +8,13 @@ bulletSpeed = 10;
 canShoot = true;
 var olde;
 
+function returnToMain(){
+    clearInterval(game.interval);
+        $("#gameScreen").fadeOut("medium",function(){
+            $("#mainMenu").slideDown();
+        });
+}
+
 $(function(){
     //this code runs after page is fully loaded
     $("#helpMenu").hide();
@@ -33,10 +40,7 @@ $(function(){
     });
 
     $("#returnBtn").click(function(){
-        clearInterval(game.interval);
-        $("#gameScreen").fadeOut("medium",function(){
-            $("#mainMenu").slideDown();
-        });
+        returnToMain();
     });
 
     /* Key Listeners */
@@ -73,7 +77,12 @@ function gameInstance(){
         $("#playerDamageBar").css("width", pctHealth + "%");
         $("#playerHealthBar").css("width", pctHealth + "%");
 
-        self.enemy = new enemy(75, 75, 0, 0);
+        // Create the first enemy
+        self.enemy = new enemy(75, 75, 0, 0, 25, 200); // This enemy does 25 dmg per hit and 200 health
+        var enemyPctHealth = Math.round(self.enemy.currHealth * (100/self.enemy.maxHealth));
+        $("#enemyHealthText").html(enemyPctHealth + "%");
+        $("#enemyDamageBar").css("width", enemyPctHealth + "%");
+        $("#enemyHealthBar").css("width", enemyPctHealth + "%");
     }
 
     this.update = function() {
@@ -91,28 +100,29 @@ function gameInstance(){
         var collision = checkCollision(self.p.x, self.p.y, self.p.width, self.p.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height);
         if(collision){
             // Take damage OR send to end game screen OR send to start
-            self.p.takeDamage(25);
+            self.p.takeDamage(self.enemy.dmg);
 
             if(self.p.currHealth <= 0){
-                clearInterval(game.interval);
-                $("#gameScreen").fadeOut("medium",function(){
-                    $("#mainMenu").slideDown();
-                });
+                // Possibly show death screen?
+                returnToMain();
             }
         }
         /**Adding Bullet Check Collision */
         for (var i = 0; i < bulletId-numBulletsRemoved; i++){
             var b = bulletList[i];
             if (checkCollision(b.x, b.y, b.width, b.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height)){
-                console.log("Hit!");
+                //console.log("Hit!");
                 $("#bullet"+b.id).remove();
                 bulletList.splice(b.id-numBulletsRemoved, 1);
                 numBulletsRemoved++;
+
+                self.enemy.takeDamage(5);
             }
         }
     }
 }
 
+// CODE FOR THE PLAYER
 function player(width, height, x, y) {
     var self = this;
     this.width = width;
@@ -122,7 +132,7 @@ function player(width, height, x, y) {
     this.x = x;
     this.y = y;
     this.currHealth = 100;
-    this.maxHealth = 100;
+    this.maxHealth = this.currHealth;
     this.invulnerableFrames = 0;
 
     this.update = function(){ 
@@ -205,6 +215,91 @@ function player(width, height, x, y) {
     }
 }
 
+// Enemy code here
+
+function getPlayerX(){
+    player_x = game.p.x;
+    mid_x =  player_x + (game.p.width / 2);
+    return mid_x;
+}
+
+function getPlayerY(){
+    player_y = game.p.y;
+    mid_y =  player_y + (game.p.height / 2);
+    return mid_y;
+}
+
+function enemy(width, height, x, y, dmg, health){
+    var self = this;
+    this.width = width;
+    this.height = height;
+    this.speedX = 0;
+    this.speedY = 0;
+    this.moveInc = 2;
+    this.x = x;
+    this.y = y;
+    this.dmg = dmg;
+    this.currHealth = health;
+    this.maxHealth = this.currHealth;
+
+    this.update = function() {
+        self.speedX = 0;
+        self.speedY = 0;
+        var player_x = getPlayerX();
+        var player_y = getPlayerY();
+        var left = false, right = false, up = false, down = false; // Set booleans
+
+        //Try manhatten distance ... 
+        var x_mid = self.x + self.width/2;
+        var y_mid = self.y + self.height/2;
+        var x_distance = x_mid - player_x;
+        var y_distance = y_mid - player_y;
+
+        if(Math.abs(x_distance) >= Math.abs(y_distance)){
+            // Move x direction
+            if(x_mid > player_x) { self.speedX = 0 - self.moveInc; } // Move left
+            else if(x_mid < player_x) { self.speedX = self.moveInc; } // Move right
+            // Check the bounds
+            if (self.x + self.speedX >= 0 && self.x + self.speedX + self.height <= 800)          
+                self.x += self.speedX;
+        }
+        else{
+            // Move y direction
+            if(y_mid > player_y) { self.speedY = 0 - self.moveInc; } // Move down
+            else if(y_mid < player_y) { self.speedY = self.moveInc; } // Move up
+            // Check the bounds
+            if (self.y + self.speedY >= 0 && self.y + self.speedY + self.height <= 600)
+                self.y += self.speedY;
+        }
+         
+        // Update the css to show the movement
+        $("#enemy").css("left",self.x);
+        $("#enemy").css("top",self.y);
+
+        $("#enemyHealthBox").css("left",self.x);
+        $("#enemyHealthBox").css("top",self.y - 15);
+    }
+
+    this.takeDamage = function(dmg) {
+        /** Otherwise take damage, draw HealthBox elements */
+        if (self.currHealth - dmg < 0) {
+            self.currHealth = 0;
+        }
+        else {
+            self.currHealth = self.currHealth - dmg;
+        }
+
+        var pctHealth = Math.round(self.currHealth * (100/self.maxHealth));
+        $("#enemyHealthText").html(pctHealth + "%");
+        $("#enemyDamageBar").animate({
+            width: pctHealth + "%"
+        },
+        1000);
+        $("#enemyHealthBar").css("width", pctHealth + "%");
+    }
+    
+}
+
 function bullet(ref, id, x, y, xDir, yDir) {
     var self = this;
     this.ref = ref
@@ -258,65 +353,4 @@ function addBullet(x, y, xDir, yDir) {
     $(bulletList[bulletId-numBulletsRemoved].ref).css("top", y);
     bulletId++;
     
-}
-
-// Enemy code below here
-
-function getPlayerX(){
-    player_x = game.p.x;
-    mid_x =  player_x + (game.p.width / 2);
-    return mid_x;
-}
-
-function getPlayerY(){
-    player_y = game.p.y;
-    mid_y =  player_y + (game.p.height / 2);
-    return mid_y;
-}
-
-function enemy(width, height, x, y){
-    var self = this;
-    this.width = width;
-    this.height = height;
-    this.speedX = 0;
-    this.speedY = 0;
-    this.moveInc = 2;
-    this.x = x;
-    this.y = y;
-
-    this.update = function() {
-        self.speedX = 0;
-        self.speedY = 0;
-        var player_x = getPlayerX();
-        var player_y = getPlayerY();
-        var left = false, right = false, up = false, down = false; // Set booleans
-
-        //Try manhatten distance ... 
-        var x_mid = self.x + self.width/2;
-        var y_mid = self.y + self.height/2;
-        var x_distance = x_mid - player_x;
-        var y_distance = y_mid - player_y;
-
-        if(Math.abs(x_distance) >= Math.abs(y_distance)){
-            // Move x direction
-            if(x_mid > player_x) { self.speedX = 0 - self.moveInc; } // Move left
-            else if(x_mid < player_x) { self.speedX = self.moveInc; } // Move right
-            // Check the bounds
-            if (self.x + self.speedX >= 0 && self.x + self.speedX + self.height <= 800)          
-                self.x += self.speedX;
-        }
-        else{
-            // Move y direction
-            if(y_mid > player_y) { self.speedY = 0 - self.moveInc; } // Move down
-            else if(y_mid < player_y) { self.speedY = self.moveInc; } // Move up
-            // Check the bounds
-            if (self.y + self.speedY >= 0 && self.y + self.speedY + self.height <= 600)
-                self.y += self.speedY;
-        }
-         
-        // Update the css to show the movement
-        $("#enemy").css("left",self.x);
-        $("#enemy").css("top",self.y);
-    }
-
 }
