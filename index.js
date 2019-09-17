@@ -4,6 +4,10 @@ bulletList = [3];/** Three bullets */
 var game = undefined;
 bulletId = -1;
 canShoot = true;
+moveLeft = false; // For determining directions.
+moveRight = false;
+moveUp = false;
+moveDown = false;
 
 $(function(){
     //this code runs after page is fully loaded
@@ -229,19 +233,58 @@ function enemy(width, height, x, y){
 
         if(Math.abs(x_distance) >= Math.abs(y_distance)){
             // Move x direction
-            if(x_mid > player_x) { self.speedX = 0 - self.moveInc; } // Move left
-            else if(x_mid < player_x) { self.speedX = self.moveInc; } // Move right
+            if(x_mid > player_x) { self.speedX = 0 - self.moveInc; moveLeft = true;} // Move left
+            else {moveLeft = false;}
+            if(x_mid < player_x) { self.speedX = self.moveInc; moveRight = true; } // Move right
+            else {moveRight = false;}
             // Check the bounds
             if (self.x + self.speedX >= 0 && self.x + self.speedX + self.height <= 800)          
                 self.x += self.speedX;
         }
         else{
             // Move y direction
-            if(y_mid > player_y) { self.speedY = 0 - self.moveInc; } // Move down
-            else if(y_mid < player_y) { self.speedY = self.moveInc; } // Move up
+            if(y_mid > player_y) { self.speedY = 0 - self.moveInc; moveUp = true; } // Move up
+            else {moveUp = false;}
+            if(y_mid < player_y) { self.speedY = self.moveInc; moveDown = true; } // Move down
+            else {moveDown = false;}
             // Check the bounds
             if (self.y + self.speedY >= 0 && self.y + self.speedY + self.height <= 600)
                 self.y += self.speedY;
+        }
+
+
+        /*if (moveUp) {
+            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
+            document.getElementById("enemy").style.transform = "rotate(-90deg)";
+        }
+        if (moveDown) {
+            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
+            document.getElementById("enemy").style.transform = "rotate(90deg)";
+        }
+        if (moveLeft) { // Facing left
+            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
+            document.getElementById("enemy").style.transform = "rotate(180deg)";
+        }
+        if (moveRight) { // Facing right
+            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
+            document.getElementById("enemy").style.transform = "rotate(0deg)";
+        }*/
+        
+        if (moveRight && moveDown) { // Facing right and down
+            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
+            document.getElementById("enemy").style.transform = "rotate(45deg)";
+        }
+        if (moveLeft && moveDown) { // Facing left and down 
+            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
+            document.getElementById("enemy").style.transform = "rotate(135deg)";
+        }
+        if (moveRight && moveUp) { // Facing right and up
+            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
+            document.getElementById("enemy").style.transform = "rotate(-45deg)";
+        }
+        if (moveLeft && moveUp) { // Facing left and up
+            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
+            document.getElementById("enemy").style.transform = "rotate(-135deg)";
         }
          
         // Update the css to show the movement
