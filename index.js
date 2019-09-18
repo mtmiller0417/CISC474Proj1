@@ -7,6 +7,10 @@ bulletId = 0;
 numBulletsRemoved = 0;
 bulletSpeed = 10;
 canShoot = true;
+idlePicNum = 0;                     //number for which idle pic is being used
+imageTimer = 0;                     //timer to prevent sprite from updating too fast
+turnTimer = 0;                      //timer used to prioritize looking in shooting dir before moving dir
+turnTimerConstant = 80;             //constant time used for turnTimer
 var olde;
 
 function returnToMain(){
@@ -88,7 +92,6 @@ function gameInstance(){
 
     this.update = function() {
         self.p.update();
-
         self.enemy.update();
 
         for (var [i, b] of bulletList ) {
@@ -141,25 +144,86 @@ function player(width, height, x, y) {
         self.speedX = 0;
         self.speedY = 0;
 
+
+if(imageTimer == 0){    //prevents image from changing every update b/c it was too fast
+        var str1 = '';
+        var idlePic = str1.concat("url('Images/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_", idlePicNum, ".png')");
+
+        idlePicNum += 1;
+        idlePicNum = idlePicNum % 20;
+
+        $("#player").css('background-image', idlePic);
+    }
+
         /** ADWS Keys in order */
-        if (keys[65]) {self.speedX = -5; }
-        if (keys[68]) {self.speedX = 5; }
-        if (keys[87]) {self.speedY = -5; }
-        if (keys[83]) {self.speedY = 5; }
+        if (keys[65]) {
+            self.speedX = -5; 
+            if(turnTimer <= turnTimerConstant){
+            $("#player").css('transform', 'rotate(180deg)');
+            }
+        }
+        if (keys[68]) {
+            self.speedX = 5;
+            if(turnTimer <= turnTimerConstant){
+            $("#player").css('transform', 'rotate(0deg)');
+            }
+        }
+        if (keys[87]) {
+            self.speedY = -5; 
+            if(turnTimer <= turnTimerConstant){
+            $("#player").css('transform', 'rotate(270deg)');
+            }
+        }
+        if (keys[83]) {
+            self.speedY = 5; 
+            if(turnTimer <= turnTimerConstant){
+            $("#player").css('transform', 'rotate(90deg)');
+            }
+        }
+
+        if (keys[65] && keys[83]){
+            if(turnTimer <= turnTimerConstant){
+                $("#player").css('transform', 'rotate(120deg)');
+            }
+        }
+        if (keys[65] && keys[87]){
+            if(turnTimer <= turnTimerConstant){
+                $("#player").css('transform', 'rotate(240deg)');
+            }
+        }
+        if (keys[68] && keys[83]){
+            if(turnTimer <= turnTimerConstant){
+                $("#player").css('transform', 'rotate(60deg)');
+            }
+        }
+        if (keys[68] && keys[87]){
+            if(turnTimer <= turnTimerConstant){
+                $("#player").css('transform', 'rotate(300deg)');
+            }
+        }
 
         /** Directional Keys */
-        if (keys[37]&& canShoot) {canShoot = false;
-            addBullet(game.p.x+25, game.p.y+25, -1, 0); }
-        if (keys[39]&& canShoot) {canShoot = false;
-            addBullet(game.p.x+25, game.p.y+25, 1, 0); }
-        if (keys[38]&& canShoot) {canShoot = false;
-            addBullet(game.p.x+25, game.p.y+25, 0, -1); }
-        if (keys[40]&& canShoot) {canShoot = false;
-            addBullet(game.p.x+25, game.p.y+25, 0, 1); }
+        if (keys[37] && canShoot) {canShoot = false; turnTimer = 100;
+            addBullet(game.p.x+25, game.p.y+25, -1, 0);
+            $("#player").css('transform', 'rotate(180deg)');
+         }
+        if (keys[39] && canShoot) {canShoot = false; turnTimer = 100;
+            addBullet(game.p.x+25, game.p.y+25, 1, 0);
+            $("#player").css('transform', 'rotate(0deg)');
+        }
+        if (keys[38] && canShoot) {canShoot = false; turnTimer = 100;
+            addBullet(game.p.x+25, game.p.y+25, 0, -1);
+            $("#player").css('transform', 'rotate(270deg)');
+        }
+        if (keys[40] && canShoot) {canShoot = false; turnTimer = 100;
+            addBullet(game.p.x+25, game.p.y+25, 0, 1);
+            $("#player").css('transform', 'rotate(90deg)');
+        }
 
         if ((keys[32]) && canShoot){/**Space Bar Shooting */
             canShoot = false;
             addBullet(game.p.x+25, game.p.y-25, 1, 0);
+
         }
 
         /** Update Values */
@@ -171,6 +235,15 @@ function player(width, height, x, y) {
         /** Draw */
         $("#player").css("left",self.x);
         $("#player").css("top",self.y);
+
+
+
+        imageTimer += 1;
+        imageTimer = imageTimer%4;
+        if(turnTimer != 0){
+            turnTimer -= 1;
+        }
+
 
         $("#playerHealthBox").css("left",self.x);
         $("#playerHealthBox").css("top",self.y - 15);
@@ -190,8 +263,8 @@ function player(width, height, x, y) {
         else {
             $("#player").css("opacity",0);
         }
-    }
     
+    }
     this.takeDamage = function(dmg) {
         /** If invulnerable, don't do anything */
         if (self.invulnerableFrames > 0)
@@ -215,8 +288,8 @@ function player(width, height, x, y) {
 
         self.invulnerableFrames = 100;
     }
-}
 
+}
 // Enemy code here
 
 function getPlayerX(){
