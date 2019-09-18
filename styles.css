@@ -123,11 +123,13 @@ body {
 
     background:whitesmoke;
     color:white;
-    outline: auto;
+    outline: solid;
     outline-color: black;
     text-align:center;
     font-family:arial;
     font-size:30px;
+    
+    
 }
 
 #player {
@@ -144,18 +146,30 @@ body {
     background-repeat: no-repeat;
 }
 
-#enemy {
-    display:flex;
-    position:absolute; /* Should this be absolute??? or relative? */
-    height:75px;
-    width:75px;
+.healthBox {
+    position:absolute;
+    z-index: 1;
+    height: 12px;
+    width: 80px;
+    margin-left:-15px;
+    margin-top:-5px;
+
+    text-align:center;
+
+    background:lightgray;
+    outline: none;
+}
+
+.healthBar {
+    position:absolute;
+    z-index: 3;
+    height: 100%;
+    width: 100%;
     left:0px;
     top:0px;
 
-    background: red;
-    color:black;
+    background-color:rgb(100, 255, 100);
 }
-
 
 #bullet1 {
     position:relative;
@@ -169,21 +183,47 @@ body {
     color:white;
 }
 
-#bullet2 {
-    position:relative;
+.damageBar {
+    position:absolute;
     z-index: 2;
-    height:5px;
-    width:5px;
+    height: 100%;
+    width: 100%;
     left:0px;
     top:0px;
-    
-    background:black;
-    color:white;
+
+    background-color:rgb(255, 100, 100);
+
 }
 
-#bullet3 {
-    position:relative;
-    z-index: 3;
+.healthText {
+    position:absolute;
+    z-index: 4;
+    height: 8px;
+    width: 50px;
+    top:-3px;
+    margin-left:15px;
+
+    color:black;
+
+    text-align:center;
+    font-family:arial;
+    font-size:16px;
+}
+
+#enemy {
+    display:flex;
+    position:absolute; /* Should this be absolute??? or relative? */
+    height:75px;
+    width:75px;
+    left:0px;
+    top:0px;
+    background: red;
+    color:black;
+}
+
+.bullet {
+    position:absolute;
+    z-index: 0;
     height:5px;
     width:5px;
     left:0px;
