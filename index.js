@@ -4,8 +4,11 @@ bulletList = [3];/** Three bullets */
 var game = undefined;
 bulletId = -1;
 canShoot = true;
-imageNumber = 0;
+idlePicNum = 0;
+shootPicNum = 0;
 imageTimer = 0;
+turnTimer = 0;
+turnTimerConstant = 80;
 
 $(function(){
     //this code runs after page is fully loaded
@@ -39,10 +42,10 @@ $(function(){
     });
 
     $("#gameScreen").mousedown(function (e) {
-        console.log(game.p.x);
-        console.log(game.p.y);
-        console.log(e.clientX);
-        console.log(e.clientY);
+        // console.log(game.p.x);
+        // console.log(game.p.y);
+        // console.log(e.clientX);
+        // console.log(e.clientY);
         addBullet("black", 10, 2, game.p.x+25, game.p.y-25-(((bulletId+1)%3)*5), e.clientX-240, e.clientY-75-bulletIdOffsetY());
         /**!!!Need to make this dynamic!!! */
         /** Need to add offsets to game.p vars for top/bottom and left/right */
@@ -62,8 +65,8 @@ $(function(){
     document.body.addEventListener("keyup", function (e) {
         keys[e.keyCode] = false;
         if (e.keyCode == 32 || (e.keyCode >= 37 && e.keyCode <= 40)){
-            console.log(game.p.x);
-            console.log(game.p.y);
+            // console.log(game.p.x);
+            // console.log(game.p.y);
             canShoot = true;
         }
     });
@@ -83,7 +86,7 @@ function gameInstance(){
 
     this.update = function() {
         self.p.update();
-        self.enemy.update();
+        //self.enemy.update();          //commented out for testing
         if (bulletId != -1){
             $.each(bulletList, function (index, bullet) {  
                 bulletUpdate(bullet, self.p);
@@ -115,48 +118,91 @@ function player(width, height, x, y) {
 
 
 if(imageTimer == 0){    //prevents image from changing every update b/c it was too fast
-        var str = '';
-        var pic = str.concat("url('Images/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_", imageNumber, ".png')");
+        var str1 = '';
+        var str2 = '';
+        var idlePic = str1.concat("url('Images/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_", idlePicNum, ".png')");
+        var shootPic = str2.concat("url('Images/Top_Down_Survivor/rifle/shoot/survivor-shoot_rifle_", shootPicNum, ".png')");
 
-        console.log(pic);
 
-        imageNumber += 1;
-        imageNumber = imageNumber % 20;
+        idlePicNum += 1;
+        idlePicNum = idlePicNum % 20;
 
-        $("#player").css('background-image', pic);
+        shootPicNum += 1;
+        shootPicNum = shootPicNum % 3;
+
+        $("#player").css('background-image', idlePic);
     }
-    imageTimer += 1;
-    imageTimer = imageTimer%4;
+
         
 
         /** ADWS Keys in order */
-        if (keys[65]) {self.speedX = -5; $("#player").css('transform', 'rotate(180deg)');}
-        if (keys[68]) {self.speedX = 5;$("#player").css('transform', 'rotate(0deg)');}
-        if (keys[87]) {self.speedY = -5; $("#player").css('transform', 'rotate(270deg)');}
-        if (keys[83]) {self.speedY = 5; $("#player").css('transform', 'rotate(90deg)');}
+        if (keys[65]) {
+            self.speedX = -5; 
+            if(turnTimer <= turnTimerConstant){
+            $("#player").css('transform', 'rotate(180deg)');
+            }
+        }
+        if (keys[68]) {
+            self.speedX = 5;
+            if(turnTimer <= turnTimerConstant){
+            $("#player").css('transform', 'rotate(0deg)');
+            }
+        }
+        if (keys[87]) {
+            self.speedY = -5; 
+            if(turnTimer <= turnTimerConstant){
+            $("#player").css('transform', 'rotate(270deg)');
+            }
+        }
+        if (keys[83]) {
+            self.speedY = 5; 
+            if(turnTimer <= turnTimerConstant){
+            $("#player").css('transform', 'rotate(90deg)');
+            }
+        }
 
         if (keys[65] && keys[83]){
-            $("#player").css('transform', 'rotate(120deg)');
+            if(turnTimer <= turnTimerConstant){
+                $("#player").css('transform', 'rotate(120deg)');
+            }
         }
         if (keys[65] && keys[87]){
-            $("#player").css('transform', 'rotate(240deg)');
+            if(turnTimer <= turnTimerConstant){
+                $("#player").css('transform', 'rotate(240deg)');
+            }
         }
         if (keys[68] && keys[83]){
-            $("#player").css('transform', 'rotate(60deg)');
+            if(turnTimer <= turnTimerConstant){
+                $("#player").css('transform', 'rotate(60deg)');
+            }
         }
         if (keys[68] && keys[87]){
-            $("#player").css('transform', 'rotate(300deg)');
+            if(turnTimer <= turnTimerConstant){
+                $("#player").css('transform', 'rotate(300deg)');
+            }
         }
 
         /** Directional Keys */
-        if (keys[37]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 7, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25-1, game.p.y-25-bulletIdOffsetY()); }
-        if (keys[39]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 7, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25+1, game.p.y-25-bulletIdOffsetY()); }
-        if (keys[38]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 7, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25, game.p.y-1-25-bulletIdOffsetY()); }
-        if (keys[40]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 7, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25, game.p.y+1-25-bulletIdOffsetY()); }
+        if (keys[37] && canShoot) {canShoot = false; turnTimer = 100;
+            addBullet("black", 10, 7, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25-1, game.p.y-25-bulletIdOffsetY());
+            $("#player").css('transform', 'rotate(180deg)');
+         }
+        if (keys[39] && canShoot) {canShoot = false; turnTimer = 100;
+            addBullet("black", 10, 7, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25+1, game.p.y-25-bulletIdOffsetY());
+            $("#player").css('transform', 'rotate(0deg)');
+        }
+        if (keys[38] && canShoot) {canShoot = false; turnTimer = 100;
+            addBullet("black", 10, 7, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25, game.p.y-1-25-bulletIdOffsetY());
+            $("#player").css('transform', 'rotate(270deg)');
+        }
+        if (keys[40] && canShoot) {canShoot = false; turnTimer = 100;
+            addBullet("black", 10, 7, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25, game.p.y+1-25-bulletIdOffsetY());
+            $("#player").css('transform', 'rotate(90deg)');
+        }
+        // if (keys[37] && keys[38] && canShoot) {canShoot = false; turnTimer = 100;
+        //     addBullet("black", 10, 7, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25-1, game.p.y-25-bulletIdOffsetY());
+        //     $("#player").css('transform', 'rotate(240deg)');
+        //  }
 
         if ((keys[32]) && canShoot){/**Space Bar Shooting */
             canShoot = false;
@@ -172,7 +218,19 @@ if(imageTimer == 0){    //prevents image from changing every update b/c it was t
         /** Draw */
         $("#player").css("left",self.x);
         $("#player").css("top",self.y);
-    } 
+
+
+
+        imageTimer += 1;
+        imageTimer = imageTimer%4;
+        if(turnTimer != 0){
+            turnTimer -= 1;
+        }
+
+    }
+    
+
+    
 }
 
 function bullet(id, color, size, speed, x, y, eX, eY, dx, dy, mag) {
