@@ -347,6 +347,6 @@ function addBullet(x, y, xDir, yDir) {
                         bulletId, x, y, xDir, yDir));
     $(bulletList.get(bulletId).ref).css("left", x);
     $(bulletList.get(bulletId).ref).css("top", y);
-    bulletId++;
+    bulletId = (bulletId+1)%25;
     
 }
