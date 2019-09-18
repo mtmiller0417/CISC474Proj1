@@ -1,6 +1,7 @@
 /* Global Vars */
 keys = [];
-bulletList = [];
+bulletList = new Map();
+removeBullets = new Map();
 var game = undefined;
 bulletId = 0;
 numBulletsRemoved = 0;
@@ -93,13 +94,25 @@ function gameInstance(){
     this.update = function() {
         self.p.update();
         self.enemy.update();
-        var tmp;
-        var tmp2 = bulletId;
-        $(document).off('keydown keyup');
-        for (var i = 0; i < bulletId-numBulletsRemoved; i++){
-        updateBullet(bulletList[i]);
+
+        for (var [i, b] of bulletList ) {
+            
+            updateBullet(b);
+
+             /**Adding Bullet Check Collision */
+            if (checkCollision(b.x, b.y, b.width, b.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height)){
+                //console.log("Hit!");
+                removeBullets.set(b.id, b);
+                self.enemy.takeDamage(5);
+            }
         }
-        $(document).on('keydown keyup');
+
+        for (var [i, b] of removeBullets ) {
+             /**Remove dead bullets */
+            $("#bullet"+b.id).remove();
+            bulletList.delete(b.id);
+        }
+        removeBullets.clear();
 
         var collision = checkCollision(self.p.x, self.p.y, self.p.width, self.p.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height);
         if(collision){
@@ -111,18 +124,7 @@ function gameInstance(){
                 returnToMain();
             }
         }
-        /**Adding Bullet Check Collision */
-        for (var i = 0; i < bulletId-numBulletsRemoved; i++){
-            var b = bulletList[i];
-            if (checkCollision(b.x, b.y, b.width, b.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height)){
-                //console.log("Hit!");
-                $("#bullet"+b.id).remove();
-                bulletList.splice(b.id-numBulletsRemoved, 1);
-                numBulletsRemoved++;
-
-                self.enemy.takeDamage(5);
-            }
-        }
+       
     }
 }
 
@@ -404,27 +406,21 @@ function updateBullet(b){
 
         }else{
             // console.log("#bullet"+b.id);
-            $("#bullet"+b.id).remove();
-            bulletList.splice(b.id-numBulletsRemoved, 1);
-            numBulletsRemoved++;
-        
+            removeBullets.set(b.id, b);
         } 
 
     }else {
         // console.log("#bullet"+b.id);
-        $("#bullet"+b.id).remove();
-        bulletList.splice(b.id-numBulletsRemoved, 1);
-        numBulletsRemoved++;
-    
+        removeBullets.set(b.id, b);
     }
 }
 
 function addBullet(x, y, xDir, yDir) {
     // console.log("<div class='bullet' id= 'bullet"+bulletId+"'></div>");
-    bulletList[bulletId-numBulletsRemoved]= new bullet ($("<div class='bullet' id= 'bullet"+bulletId+"'></div>").appendTo('#gameScreen'),
-                        bulletId, x, y, xDir, yDir);
-    $(bulletList[bulletId-numBulletsRemoved].ref).css("left", x);
-    $(bulletList[bulletId-numBulletsRemoved].ref).css("top", y);
-    bulletId++;
+    bulletList.set(bulletId, new bullet ($("<div class='bullet' id= 'bullet"+bulletId+"'></div>").appendTo('#gameScreen'),
+                        bulletId, x, y, xDir, yDir));
+    $(bulletList.get(bulletId).ref).css("left", x);
+    $(bulletList.get(bulletId).ref).css("top", y);
+    bulletId = (bulletId+1)%25;
     
 }
