@@ -7,11 +7,10 @@ bulletId = 0;
 numBulletsRemoved = 0;
 bulletSpeed = 10;
 canShoot = true;
-idlePicNum = 0;
-shootPicNum = 0;
-imageTimer = 0;
-turnTimer = 0;
-turnTimerConstant = 80;
+idlePicNum = 0;                     //number for which idle pic is being used
+imageTimer = 0;                     //timer to prevent sprite from updating too fast
+turnTimer = 0;                      //timer used to prioritize looking in shooting dir before moving dir
+turnTimerConstant = 80;             //constant time used for turnTimer
 var olde;
 
 function returnToMain(){
