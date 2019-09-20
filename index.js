@@ -1,13 +1,31 @@
 /* Global Vars */
 keys = [];
-bulletList = [3];/** Three bullets */
+bulletList = new Map();
+removeBullets = new Map();
 var game = undefined;
-bulletId = -1;
+bulletId = 0;
+numBulletsRemoved = 0;
+bulletSpeed = 10;
 canShoot = true;
+
 moveLeft = false; // For determining directions.
 moveRight = false;
 moveUp = false;
 moveDown = false;
+
+idlePicNum = 0;                     //number for which idle pic is being used
+imageTimer = 0;                     //timer to prevent sprite from updating too fast
+turnTimer = 0;                      //timer used to prioritize looking in shooting dir before moving dir
+turnTimerConstant = 80;             //constant time used for turnTimer
+var olde;
+
+function returnToMain(){
+    clearInterval(game.interval);
+        $("#gameScreen").fadeOut("medium",function(){
+            $("#mainMenu").slideDown();
+        });
+}
+
 
 $(function(){
     //this code runs after page is fully loaded
@@ -34,38 +52,23 @@ $(function(){
     });
 
     $("#returnBtn").click(function(){
-        clearInterval(game.interval);
-        $("#gameScreen").fadeOut("medium",function(){
-            $("#mainMenu").slideDown();
-        });
+        returnToMain();
     });
-
-    $("#gameScreen").mousedown(function (e) {
-        console.log(game.p.x);
-        console.log(game.p.y);
-        console.log(e.clientX);
-        console.log(e.clientY);
-        addBullet("black", 10, 2, game.p.x+25, game.p.y-25-(((bulletId+1)%3)*5), e.clientX-240, e.clientY-75-bulletIdOffsetY());
-        /**!!!Need to make this dynamic!!! */
-        /** Need to add offsets to game.p vars for top/bottom and left/right */
-        /** X seems to be -200 for half of gameScreen margin left (-400px) and -40 for ?*/
-        /** Y seems to be -75 for some reason? gameScreenmargin top is (-300px) so -300/4? */
-
-    });
-    
-   
 
     /* Key Listeners */
     document.body.addEventListener("keydown", function (e) {
-        keys[e.keyCode] = true;
         
+        if ((e.keyCode >= 37 && e.keyCode <= 40) && (keys[37]||keys[38]||keys[39]||keys[40])){
+            /**do nothing */
+        }else {
+            keys[e.keyCode] = true;
+            olde = e.keyCode;
+        }
     });
 
     document.body.addEventListener("keyup", function (e) {
         keys[e.keyCode] = false;
-        if (e.keyCode == 32 || (e.keyCode >= 37 && e.keyCode <= 40)){
-            console.log(game.p.x);
-            console.log(game.p.y);
+        if ((e.keyCode == 32 || (e.keyCode >= 37 && e.keyCode <= 40)) && e.keyCode==olde){
             canShoot = true;
         }
     });
@@ -79,29 +82,59 @@ function gameInstance(){
 
     this.initGame = function() {
         self.running = true;
+
         self.p = new player(50, 50, 400, 300);
-        self.enemy = new enemy(75, 75, 0, 0);
+        var pctHealth = Math.round(self.p.currHealth * (100/self.p.maxHealth));
+        $("#playerHealthText").html(pctHealth + "%");
+        $("#playerDamageBar").css("width", pctHealth + "%");
+        $("#playerHealthBar").css("width", pctHealth + "%");
+
+        // Create the first enemy
+        self.enemy = new enemy(75, 75, 0, 0, 25, 200); // This enemy does 25 dmg per hit and 200 health
+        var enemyPctHealth = Math.round(self.enemy.currHealth * (100/self.enemy.maxHealth));
+        $("#enemyHealthText").html(enemyPctHealth + "%");
+        $("#enemyDamageBar").css("width", enemyPctHealth + "%");
+        $("#enemyHealthBar").css("width", enemyPctHealth + "%");
     }
 
     this.update = function() {
         self.p.update();
         self.enemy.update();
-        if (bulletId != -1){
-            $.each(bulletList, function (index, bullet) {  
-                bulletUpdate(bullet, self.p);
-             });
+
+        for (var [i, b] of bulletList ) {
+            
+            updateBullet(b);
+
+             /**Adding Bullet Check Collision */
+            if (checkCollision(b.x, b.y, b.width, b.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height)){
+                //console.log("Hit!");
+                removeBullets.set(b.id, b);
+                self.enemy.takeDamage(5);
+            }
         }
+
+        for (var [i, b] of removeBullets ) {
+             /**Remove dead bullets */
+            $("#bullet"+b.id).remove();
+            bulletList.delete(b.id);
+        }
+        removeBullets.clear();
+
         var collision = checkCollision(self.p.x, self.p.y, self.p.width, self.p.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height);
         if(collision){
             // Take damage OR send to end game screen OR send to start
-            clearInterval(game.interval);
-                $("#gameScreen").fadeOut("medium",function(){
-                $("#mainMenu").slideDown();
-            });
+            self.p.takeDamage(self.enemy.dmg);
+
+            if(self.p.currHealth <= 0){
+                // Possibly show death screen?
+                returnToMain();
+            }
         }
+       
     }
 }
 
+// CODE FOR THE PLAYER
 function player(width, height, x, y) {
     var self = this;
     this.width = width;
@@ -109,31 +142,95 @@ function player(width, height, x, y) {
     this.speedX = 0;
     this.speedY = 0;    
     this.x = x;
-    this.y = y;    
+    this.y = y;
+    this.currHealth = 100;
+    this.maxHealth = this.currHealth;
+    this.invulnerableFrames = 0;
 
     this.update = function(){ 
         self.speedX = 0;
         self.speedY = 0;
 
+
+if(imageTimer == 0){    //prevents image from changing every update b/c it was too fast
+        var str1 = '';
+        var idlePic = str1.concat("url('Images/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_", idlePicNum, ".png')");
+
+        idlePicNum += 1;
+        idlePicNum = idlePicNum % 20;
+
+        $("#player").css('background-image', idlePic);
+    }
+
         /** ADWS Keys in order */
-        if (keys[65]) {self.speedX = -5; }
-        if (keys[68]) {self.speedX = 5; }
-        if (keys[87]) {self.speedY = -5; }
-        if (keys[83]) {self.speedY = 5; }
+        if (keys[65]) {
+            self.speedX = -5; 
+            if(turnTimer <= turnTimerConstant){
+            $("#player").css('transform', 'rotate(180deg)');
+            }
+        }
+        if (keys[68]) {
+            self.speedX = 5;
+            if(turnTimer <= turnTimerConstant){
+            $("#player").css('transform', 'rotate(0deg)');
+            }
+        }
+        if (keys[87]) {
+            self.speedY = -5; 
+            if(turnTimer <= turnTimerConstant){
+            $("#player").css('transform', 'rotate(270deg)');
+            }
+        }
+        if (keys[83]) {
+            self.speedY = 5; 
+            if(turnTimer <= turnTimerConstant){
+            $("#player").css('transform', 'rotate(90deg)');
+            }
+        }
+
+        if (keys[65] && keys[83]){
+            if(turnTimer <= turnTimerConstant){
+                $("#player").css('transform', 'rotate(120deg)');
+            }
+        }
+        if (keys[65] && keys[87]){
+            if(turnTimer <= turnTimerConstant){
+                $("#player").css('transform', 'rotate(240deg)');
+            }
+        }
+        if (keys[68] && keys[83]){
+            if(turnTimer <= turnTimerConstant){
+                $("#player").css('transform', 'rotate(60deg)');
+            }
+        }
+        if (keys[68] && keys[87]){
+            if(turnTimer <= turnTimerConstant){
+                $("#player").css('transform', 'rotate(300deg)');
+            }
+        }
 
         /** Directional Keys */
-        if (keys[37]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25-1, game.p.y-25-bulletIdOffsetY()); }
-        if (keys[39]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25+1, game.p.y-25-bulletIdOffsetY()); }
-        if (keys[38]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25, game.p.y-1-25-bulletIdOffsetY()); }
-        if (keys[40]&& canShoot) {canShoot = false;
-            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25, game.p.y+1-25-bulletIdOffsetY()); }
+        if (keys[37] && canShoot) {canShoot = false; turnTimer = 100;
+            addBullet(game.p.x+25, game.p.y+25, -1, 0);
+            $("#player").css('transform', 'rotate(180deg)');
+         }
+        if (keys[39] && canShoot) {canShoot = false; turnTimer = 100;
+            addBullet(game.p.x+25, game.p.y+25, 1, 0);
+            $("#player").css('transform', 'rotate(0deg)');
+        }
+        if (keys[38] && canShoot) {canShoot = false; turnTimer = 100;
+            addBullet(game.p.x+25, game.p.y+25, 0, -1);
+            $("#player").css('transform', 'rotate(270deg)');
+        }
+        if (keys[40] && canShoot) {canShoot = false; turnTimer = 100;
+            addBullet(game.p.x+25, game.p.y+25, 0, 1);
+            $("#player").css('transform', 'rotate(90deg)');
+        }
 
         if ((keys[32]) && canShoot){/**Space Bar Shooting */
             canShoot = false;
-            addBullet("black", 10, 2, game.p.x+25, game.p.y-25-bulletIdOffsetY(), game.p.x+25+1, game.p.y-25-bulletIdOffsetY());
+            addBullet(game.p.x+25, game.p.y-25, 1, 0);
+
         }
 
         /** Update Values */
@@ -145,56 +242,62 @@ function player(width, height, x, y) {
         /** Draw */
         $("#player").css("left",self.x);
         $("#player").css("top",self.y);
-    } 
-}
 
-function bullet(id, color, size, speed, x, y, eX, eY, dx, dy, mag) {
-    var self = this;
-    this.id = id;           
-    this.color = color;
-    this.size = size;
-    this.x = x;
-    this.y = y;
-    this.eX = eX;
-    this.eY = eY;
-    var dx = (self.eX - self.x);
-    var dy = (self.eY - self.y);
-    var mag = Math.sqrt(dx * dx + dy * dy);
-    this.speed = speed;
-    this.velocityX = (dx / mag) * self.speed;
-    this.velocityY = (dy / mag) * self.speed;
+
+
+        imageTimer += 1;
+        imageTimer = imageTimer%4;
+        if(turnTimer != 0){
+            turnTimer -= 1;
+        }
+
+
+        $("#playerHealthBox").css("left",self.x);
+        $("#playerHealthBox").css("top",self.y - 15);
+
+        /** Invulnerability Indicators */
+        if (self.invulnerableFrames > 0) {
+            self.invulnerableFrames -= 1;
+            $("#playerHealthBox").css("outline","solid 4px gold");
+        }
+        else {
+            $("#playerHealthBox").css("outline","none");
+        }
+
+        if (self.invulnerableFrames % 20 < 10) {
+            $("#player").css("opacity",1);
+        }
+        else {
+            $("#player").css("opacity",0);
+        }
     
-}
-
-bulletIdOffsetY = function(){
-    return (((bulletId+1)%3)*5);
-}
-
-function bulletUpdate(self, player){
-    /*Update Values*/             
-    
-    self.x += self.velocityX;
-    self.y += self.velocityY;
-    /*Draw*/
-    if (self.id == 0){
-        $("#bullet1").css("left",self.x);
-        $("#bullet1").css("top",self.y);
-    } else if (self.id == 1){
-        $("#bullet2").css("left",self.x);
-        $("#bullet2").css("top",self.y);
-    } else if (self.id == 2){
-        $("#bullet3").css("left",self.x);
-        $("#bullet3").css("top",self.y);
     }
-}
+    this.takeDamage = function(dmg) {
+        /** If invulnerable, don't do anything */
+        if (self.invulnerableFrames > 0)
+            return;
 
-function addBullet(color, bsize, bspeed, x, y, eX, eY) {
-    bulletId = (bulletId + 1)%3;
-    bulletList[bulletId] = new bullet(bulletId, color, bsize, bspeed, x, y, eX, eY);
-    
-}
+        /** Otherwise take damage, draw HealthBox elements */
+        if (self.currHealth - dmg < 0) {
+            self.currHealth = 0;
+        }
+        else {
+            self.currHealth = self.currHealth - dmg;
+        }
 
-// Enemy code below here
+        var pctHealth = Math.round(self.currHealth * (100/self.maxHealth));
+        $("#playerHealthText").html(pctHealth + "%");
+        $("#playerDamageBar").animate({
+            width: pctHealth + "%"
+        },
+        1000);
+        $("#playerHealthBar").css("width", pctHealth + "%");
+
+        self.invulnerableFrames = 100;
+    }
+
+}
+// Enemy code here
 
 function getPlayerX(){
     player_x = game.p.x;
@@ -208,7 +311,7 @@ function getPlayerY(){
     return mid_y;
 }
 
-function enemy(width, height, x, y){
+function enemy(width, height, x, y, dmg, health){
     var self = this;
     this.width = width;
     this.height = height;
@@ -217,6 +320,9 @@ function enemy(width, height, x, y){
     this.moveInc = 2;
     this.x = x;
     this.y = y;
+    this.dmg = dmg;
+    this.currHealth = health;
+    this.maxHealth = this.currHealth;
 
     this.update = function() {
         self.speedX = 0;
@@ -290,5 +396,76 @@ function enemy(width, height, x, y){
         // Update the css to show the movement
         $("#enemy").css("left",self.x);
         $("#enemy").css("top",self.y);
+
+        $("#enemyHealthBox").css("left",self.x);
+        $("#enemyHealthBox").css("top",self.y - 15);
     }
+
+    this.takeDamage = function(dmg) {
+        /** Otherwise take damage, draw HealthBox elements */
+        if (self.currHealth - dmg < 0) {
+            self.currHealth = 0;
+        }
+        else {
+            self.currHealth = self.currHealth - dmg;
+        }
+
+        var pctHealth = Math.round(self.currHealth * (100/self.maxHealth));
+        $("#enemyHealthText").html(pctHealth + "%");
+        $("#enemyDamageBar").animate({
+            width: pctHealth + "%"
+        },
+        1000);
+        $("#enemyHealthBar").css("width", pctHealth + "%");
+    }
+    
+}
+
+function bullet(ref, id, x, y, xDir, yDir) {
+    var self = this;
+    this.ref = ref
+    this.id = id;           
+    this.x = x;
+    this.y = y;
+    this.xDir = xDir;
+    this.yDir = yDir;
+    this.width = 5;
+    this.height = 5;
+
+    
+}
+
+function updateBullet(b){
+    
+    /** Update Values */
+    /*console.log(b.id);*/
+    if (b.x + b.xDir*bulletSpeed >= 0 && b.x + b.xDir*bulletSpeed + 5 <= 800) {
+        b.x += b.xDir*bulletSpeed;
+
+        if (b.y + b.yDir*bulletSpeed >= 0 && b.y + b.yDir*bulletSpeed + 5 <= 600){
+            b.y += b.yDir*bulletSpeed;
+
+            /*Draw*/
+            $(b.ref).css("left",b.x);
+            $(b.ref).css("top",b.y);
+
+        }else{
+            // console.log("#bullet"+b.id);
+            removeBullets.set(b.id, b);
+        } 
+
+    }else {
+        // console.log("#bullet"+b.id);
+        removeBullets.set(b.id, b);
+    }
+}
+
+function addBullet(x, y, xDir, yDir) {
+    // console.log("<div class='bullet' id= 'bullet"+bulletId+"'></div>");
+    bulletList.set(bulletId, new bullet ($("<div class='bullet' id= 'bullet"+bulletId+"'></div>").appendTo('#gameScreen'),
+                        bulletId, x, y, xDir, yDir));
+    $(bulletList.get(bulletId).ref).css("left", x);
+    $(bulletList.get(bulletId).ref).css("top", y);
+    bulletId = (bulletId+1)%25;
+    
 }

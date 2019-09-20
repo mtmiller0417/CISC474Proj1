@@ -123,24 +123,29 @@ body {
 
     background:whitesmoke;
     color:white;
-    outline: auto;
+    outline: solid;
     outline-color: black;
     text-align:center;
     font-family:arial;
     font-size:30px;
+    
+    
 }
 
 #player {
     position:relative;
     z-index: 0;
-    height:50px;
-    width:50px;
+    height:52px;
+    width:79px;
     left:0px;
     top:0px;
     
-    background:darkslategray;
-    color:white;
+    background-image: url("Images/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_0.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
 }
+
 
 #enemy {
     display:flex;
@@ -160,6 +165,31 @@ body {
 @keyframes enemy-move-right {
     from {background-position: 0px 160px}
     to {background-position: -738px 160px};
+
+.healthBox {
+    position:absolute;
+    z-index: 1;
+    height: 12px;
+    width: 80px;
+    margin-left:-15px;
+    margin-top:-5px;
+
+    text-align:center;
+
+    background:lightgray;
+    outline: none;
+}
+
+.healthBar {
+    position:absolute;
+    z-index: 3;
+    height: 100%;
+    width: 100%;
+    left:0px;
+    top:0px;
+
+    background-color:rgb(100, 255, 100);
+
 }
 
 #bullet1 {
@@ -170,30 +200,56 @@ body {
     left:0px;
     top:0px;
     
-    background:red;
+    background:black;
     color:white;
 }
 
-#bullet2 {
-    position:relative;
+.damageBar {
+    position:absolute;
     z-index: 2;
-    height:5px;
-    width:5px;
+    height: 100%;
+    width: 100%;
     left:0px;
     top:0px;
-    
-    background:yellow;
-    color:white;
+
+    background-color:rgb(255, 100, 100);
+
 }
 
-#bullet3 {
-    position:relative;
-    z-index: 3;
+.healthText {
+    position:absolute;
+    z-index: 4;
+    height: 8px;
+    width: 50px;
+    top:-3px;
+    margin-left:15px;
+
+    color:black;
+
+    text-align:center;
+    font-family:arial;
+    font-size:16px;
+}
+
+#enemy {
+    display:flex;
+    position:absolute; /* Should this be absolute??? or relative? */
+    height:75px;
+    width:75px;
+    left:0px;
+    top:0px;
+    background: red;
+    color:black;
+}
+
+.bullet {
+    position:absolute;
+    z-index: 0;
     height:5px;
     width:5px;
     left:0px;
     top:0px;
     
-    background:blue;
+    background:black;
     color:white;
 }
