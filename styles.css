@@ -232,3 +232,13 @@ body {
     background:black;
     color:white;
 }
+
+#floorText {
+    position:absolute;
+    display:flex;
+    color:black;
+
+    text-align:center;
+    font-family:arial;
+    font-size:50px;
+}
