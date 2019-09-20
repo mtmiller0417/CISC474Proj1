@@ -146,6 +146,26 @@ body {
     background-repeat: no-repeat;
 }
 
+
+#enemy {
+    display:flex;
+    position:absolute; /* Should this be absolute??? or relative? */
+    /*height:75px;
+    width:75px;*/
+    height: 80px;
+    width: 123px;
+    left:0px;
+    top:0px;
+
+    /*background: red;
+    color:black;*/
+    background: url("Images/zombie_sprite.png");
+}
+
+@keyframes enemy-move-right {
+    from {background-position: 0px 160px}
+    to {background-position: -738px 160px};
+
 .healthBox {
     position:absolute;
     z-index: 1;
@@ -169,6 +189,7 @@ body {
     top:0px;
 
     background-color:rgb(100, 255, 100);
+
 }
 
 #bullet1 {
