@@ -204,15 +204,15 @@ if(imageTimer == 0){    //prevents image from changing every update b/c it was t
 
         /** Directional Keys */
         if (keys[37] && canShoot) {canShoot = false; turnTimer = 100;
-            addBullet(game.p.x+25, game.p.y+25, -1, 0);
+            addBullet(game.p.x+25, game.p.y+12, -1, 0);
             $("#player").css('transform', 'rotate(180deg)');
          }
         if (keys[39] && canShoot) {canShoot = false; turnTimer = 100;
-            addBullet(game.p.x+25, game.p.y+25, 1, 0);
+            addBullet(game.p.x+25, game.p.y+36, 1, 0);
             $("#player").css('transform', 'rotate(0deg)');
         }
         if (keys[38] && canShoot) {canShoot = false; turnTimer = 100;
-            addBullet(game.p.x+25, game.p.y+25, 0, -1);
+            addBullet(game.p.x+49, game.p.y+25, 0, -1);
             $("#player").css('transform', 'rotate(270deg)');
         }
         if (keys[40] && canShoot) {canShoot = false; turnTimer = 100;
