@@ -26,6 +26,25 @@ function returnToMain(){
         });
 }
 
+<<<<<<< HEAD
+function nextLevel(floor){
+    $("#gameScreen").fadeOut();
+    $("#floorText").html('Floor ' + floor);
+    clearGame(); // Clear the bullets from the game
+    $("#gameScreen").fadeIn();
+    game.initGame();
+}
+
+function clearGame(){
+    for (var [i, b] of bulletList ) {
+        /**Remove dead bullets */
+       $("#bullet"+b.id).remove();
+       bulletList.delete(b.id);
+   }
+   removeBullets.clear();
+}
+=======
+>>>>>>> master
 
 $(function(){
     //this code runs after page is fully loaded
@@ -90,7 +109,7 @@ function gameInstance(){
         $("#playerHealthBar").css("width", pctHealth + "%");
 
         // Create the first enemy
-        self.enemy = new enemy(75, 75, 0, 0, 25, 200); // This enemy does 25 dmg per hit and 200 health
+        self.enemy = new enemy(75, 75, 0, 0, 25, 50); // This enemy does 25 dmg per hit and 50 health
         var enemyPctHealth = Math.round(self.enemy.currHealth * (100/self.enemy.maxHealth));
         $("#enemyHealthText").html(enemyPctHealth + "%");
         $("#enemyDamageBar").css("width", enemyPctHealth + "%");
@@ -110,6 +129,10 @@ function gameInstance(){
                 //console.log("Hit!");
                 removeBullets.set(b.id, b);
                 self.enemy.takeDamage(5);
+                if(self.enemy.currHealth <= 0){
+                    //returnToMain();
+                    nextLevel(2);
+                }
             }
         }
 
