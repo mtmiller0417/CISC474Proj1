@@ -90,7 +90,7 @@ function gameInstance(){
         $("#playerHealthBar").css("width", pctHealth + "%");
 
         // Create the first enemy
-        self.enemy = new enemy(75, 75, 0, 0, 25, 200); // This enemy does 25 dmg per hit and 200 health
+        self.enemy = new enemy(123, 80, 0, 0, 25, 200); // This enemy does 25 dmg per hit and 200 health
         var enemyPctHealth = Math.round(self.enemy.currHealth * (100/self.enemy.maxHealth));
         $("#enemyHealthText").html(enemyPctHealth + "%");
         $("#enemyDamageBar").css("width", enemyPctHealth + "%");

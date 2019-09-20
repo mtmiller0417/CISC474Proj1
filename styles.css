@@ -165,6 +165,7 @@ body {
 @keyframes enemy-move-right {
     from {background-position: 0px 160px}
     to {background-position: -738px 160px};
+}
 
 .healthBox {
     position:absolute;
@@ -231,16 +232,16 @@ body {
     font-size:16px;
 }
 
-#enemy {
+/*#enemy {
     display:flex;
-    position:absolute; /* Should this be absolute??? or relative? */
+    position:absolute; 
     height:75px;
     width:75px;
     left:0px;
     top:0px;
     background: red;
     color:black;
-}
+}*/
 
 .bullet {
     position:absolute;
