@@ -361,24 +361,6 @@ function enemy(width, height, x, y, dmg, health){
             if (self.y + self.speedY >= 0 && self.y + self.speedY + self.height <= 600)
                 self.y += self.speedY;
         }
-
-
-        /*if (moveUp) {
-            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
-            document.getElementById("enemy").style.transform = "rotate(-90deg)";
-        }
-        if (moveDown) {
-            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
-            document.getElementById("enemy").style.transform = "rotate(90deg)";
-        }
-        if (moveLeft) { // Facing left
-            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
-            document.getElementById("enemy").style.transform = "rotate(180deg)";
-        }
-        if (moveRight) { // Facing right
-            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
-            document.getElementById("enemy").style.transform = "rotate(0deg)";
-        }*/
         
         if (moveRight && moveDown) { // Facing right and down
             document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
