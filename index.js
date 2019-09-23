@@ -106,9 +106,29 @@ function gameInstance(){
         $("#playerHealthBar").css("width", pctHealth + "%");
 
         // Create the enemy based on the floor
+        switch(floor) {
+            case 1:
+                // Create the first enemy
+                self.enemy = new enemy(123, 80, 0, 0, 25, 50, 1); // This enemy does 25 dmg per hit and 50 health with a speed of 1
+                break;
+            case 2:
+                // Create the first enemy
+                self.enemy = new enemy(123, 80, 0, 0, 25, 50, 2); // This enemy does 25 dmg per hit and 50 health with a speed of 2
+                break;
+            /*case 3:
+                // Create the first enemy
+                self.enemy = new enemy(123, 80, 0, 0, 30, 100, 2); // This enemy does 30 dmg per hit and 100 health with a speed of 2
+                break;
+            case 4:
+                self.enemy = new enemy(123, 80, 0, 0, 30, 100, 3); // This enemy does 30 dmg per hit and 100 health with a speed of 3
+                break;*/
+            default:
+                // Create the first enemy
+                returnToMain();
+                break;
+        }
 
-        // Create the first enemy
-        self.enemy = new enemy(123, 80, 0, 0, 25, 50); // This enemy does 25 dmg per hit and 50 health
+        
         var enemyPctHealth = Math.round(self.enemy.currHealth * (100/self.enemy.maxHealth));
         $("#enemyHealthText").html(enemyPctHealth + "%");
         $("#enemyDamageBar").css("width", enemyPctHealth + "%");
@@ -332,13 +352,13 @@ function getPlayerY(){
     return mid_y;
 }
 
-function enemy(width, height, x, y, dmg, health){
+function enemy(width, height, x, y, dmg, health, speed){
     var self = this;
     this.width = width;
     this.height = height;
     this.speedX = 0;
     this.speedY = 0;
-    this.moveInc = 2;
+    this.moveInc = speed;
     this.x = x;
     this.y = y;
     this.dmg = dmg;
