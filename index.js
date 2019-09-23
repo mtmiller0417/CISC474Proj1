@@ -26,6 +26,22 @@ function returnToMain(){
         });
 }
 
+function nextLevel(floor){
+    $("#gameScreen").fadeOut();
+    $("#floorText").html('Floor ' + floor);
+    clearGame(); // Clear the bullets from the game
+    $("#gameScreen").fadeIn();
+    game.initGame(floor);
+}
+
+function clearGame(){
+    for (var [i, b] of bulletList ) {
+        /**Remove dead bullets */
+       $("#bullet"+b.id).remove();
+       bulletList.delete(b.id);
+   }
+   removeBullets.clear();
+}
 
 $(function(){
     //this code runs after page is fully loaded
@@ -36,7 +52,7 @@ $(function(){
     $("#playBtn").click(function(){
         $("#mainMenu").slideUp("medium",function(){
             game = new gameInstance();
-            game.initGame();
+            game.initGame(1);
             // run update every 10 msec
             game.interval = setInterval(game.update, 10);
             $("#gameScreen").fadeIn();
@@ -80,14 +96,16 @@ function gameInstance(){
     this.running = false;
     this.interval = undefined;
 
-    this.initGame = function() {
+    this.initGame = function(floor) {
         self.running = true;
-
+        self.floor = floor;
         self.p = new player(50, 50, 400, 300);
         var pctHealth = Math.round(self.p.currHealth * (100/self.p.maxHealth));
         $("#playerHealthText").html(pctHealth + "%");
         $("#playerDamageBar").css("width", pctHealth + "%");
         $("#playerHealthBar").css("width", pctHealth + "%");
+
+        // Create the enemy based on the floor
 
         // Create the first enemy
         self.enemy = new enemy(123, 80, 0, 0, 25, 50); // This enemy does 25 dmg per hit and 50 health
@@ -111,8 +129,7 @@ function gameInstance(){
                 removeBullets.set(b.id, b);
                 self.enemy.takeDamage(5);
                 if(self.enemy.currHealth <= 0){
-                    //returnToMain();
-                    nextLevel(2);
+                    nextLevel(self.floor + 1);
                 }
             }
         }
