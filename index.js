@@ -19,14 +19,17 @@ turnTimer = 0;                      //timer used to prioritize looking in shooti
 turnTimerConstant = 80;             //constant time used for turnTimer
 var olde;
 
+var playerMaxHP = 100;
+var playerHP = playerMaxHP;                 //set the player to have 100 hp to start
+
 function returnToMain(){
     console.log("ReturnToMain")
     clearInterval(game.interval);
         $("#gameScreen").fadeOut("medium",function(){
             $("#mainMenu").slideDown();
             $("#floorText").html("Floor 1");
+            playerHP = playerMaxHP;
         });
-    
 }
 
 function nextLevel(floor){
@@ -78,7 +81,6 @@ $(function(){
 
     /* Key Listeners */
     document.body.addEventListener("keydown", function (e) {
-        
         if ((e.keyCode >= 37 && e.keyCode <= 40) && (keys[37]||keys[38]||keys[39]||keys[40])){
             /**do nothing */
         }else {
@@ -104,7 +106,8 @@ function gameInstance(){
     this.initGame = function(floor) {
         self.running = true;
         self.floor = floor;
-        self.p = new player(50, 50, 400, 300);
+        // Get players hp from prior floor
+        self.p = new player(50, 50, 400, 300); // Instantiate the player
         var pctHealth = Math.round(self.p.currHealth * (100/self.p.maxHealth));
         $("#playerHealthText").html(pctHealth + "%");
         $("#playerDamageBar").css("width", pctHealth + "%");
@@ -150,7 +153,6 @@ function gameInstance(){
 
              /**Adding Bullet Check Collision */
             if (checkCollision(b.x, b.y, b.width, b.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height)){
-                //console.log("Hit!");
                 removeBullets.set(b.id, b);
                 self.enemy.takeDamage(5);
                 if(self.enemy.currHealth <= 0){
@@ -189,8 +191,8 @@ function player(width, height, x, y) {
     this.speedY = 0;    
     this.x = x;
     this.y = y;
-    this.currHealth = 100;
-    this.maxHealth = this.currHealth;
+    this.maxHealth = 100;
+    this.currHealth = playerHP;
     this.invulnerableFrames = 0;
 
     this.update = function(){ 
@@ -329,6 +331,7 @@ if(imageTimer == 0){    //prevents image from changing every update b/c it was t
         }
         else {
             self.currHealth = self.currHealth - dmg;
+            playerHP -= dmg;
         }
 
         var pctHealth = Math.round(self.currHealth * (100/self.maxHealth));
