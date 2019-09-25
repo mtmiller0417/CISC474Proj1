@@ -20,17 +20,20 @@ turnTimerConstant = 80;             //constant time used for turnTimer
 var olde;
 
 function returnToMain(){
+    console.log("ReturnToMain")
     clearInterval(game.interval);
         $("#gameScreen").fadeOut("medium",function(){
             $("#mainMenu").slideDown();
+            $("#floorText").html("Floor 1");
         });
+    
 }
 
 function nextLevel(floor){
-    $("#gameScreen").fadeOut();
+    //$("#gameScreen").fadeOut();
     $("#floorText").html('Floor ' + floor);
     clearGame(); // Clear the bullets from the game
-    $("#gameScreen").fadeIn();
+    //$("#gameScreen").fadeIn();
     game.initGame(floor);
 }
 
