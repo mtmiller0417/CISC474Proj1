@@ -31,10 +31,12 @@ function returnToMain(){
 
 function nextLevel(floor){
     //$("#gameScreen").fadeOut();
-    $("#floorText").html('Floor ' + floor);
     clearGame(); // Clear the bullets from the game
     //$("#gameScreen").fadeIn();
     game.initGame(floor);
+    if (floor <= 2){
+        $("#floorText").html('Floor ' + floor);
+    }
 }
 
 function clearGame(){
