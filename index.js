@@ -34,7 +34,7 @@ function nextLevel(floor){
     clearGame(); // Clear the bullets from the game
     //$("#gameScreen").fadeIn();
     game.initGame(floor);
-    if (floor <= 2){
+    if (floor <= 4){
         $("#floorText").html('Floor ' + floor);
     }
 }
@@ -120,13 +120,13 @@ function gameInstance(){
                 // Create the first enemy
                 self.enemy = new enemy(123, 80, 0, 0, 25, 50, 2); // This enemy does 25 dmg per hit and 50 health with a speed of 2
                 break;
-            /*case 3:
+            case 3:
                 // Create the first enemy
                 self.enemy = new enemy(123, 80, 0, 0, 30, 100, 2); // This enemy does 30 dmg per hit and 100 health with a speed of 2
                 break;
             case 4:
                 self.enemy = new enemy(123, 80, 0, 0, 30, 100, 3); // This enemy does 30 dmg per hit and 100 health with a speed of 3
-                break;*/
+                break;
             default:
                 // Create the first enemy
                 returnToMain();
