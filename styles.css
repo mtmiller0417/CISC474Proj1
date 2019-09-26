@@ -136,14 +136,16 @@ body {
     position:relative;
     z-index: 0;
     height:52px;
-    width:79px;
+    width:68px;
     left:0px;
     top:0px;
     
-    background-image: url("Images/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_0.png");
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
+    background: url("Images/player_sprite.png");
+    animation: player-walk 1.6s steps(20) infinite;
+}
+
+@keyframes player-walk {
+    100% {background-position: -1434px}
 }
 
 
