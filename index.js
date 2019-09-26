@@ -9,6 +9,7 @@ numBulletsRemoved = 0;
 bulletSpeed = 10;
 canShoot = true;
 heart = undefined;
+player_img = [undefined, "right"];
 
 moveLeft = false; // For determining directions.
 moveRight = false;
@@ -251,7 +252,7 @@ function player(width, height, x, y) {
         self.speedY = 0;
 
 
-if(imageTimer == 0){    //prevents image from changing every update b/c it was too fast
+/*if(imageTimer == 0){    //prevents image from changing every update b/c it was too fast
         var str1 = '';
         var idlePic = str1.concat("url('Images/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_", idlePicNum, ".png')");
 
@@ -259,7 +260,7 @@ if(imageTimer == 0){    //prevents image from changing every update b/c it was t
         idlePicNum = idlePicNum % 20;
 
         $("#player").css('background-image', idlePic);
-    }
+    }*/
 
         /** ADWS Keys in order */
         if (keys[65]) {
@@ -328,7 +329,7 @@ if(imageTimer == 0){    //prevents image from changing every update b/c it was t
 
         if ((keys[32]) && canShoot){/**Space Bar Shooting */
             canShoot = false;
-            addBullet(game.p.x+25, game.p.y-25, 1, 0);
+            addBullet(game.p.x+25, game.p.y+25, 1, 0);
 
         }
 
