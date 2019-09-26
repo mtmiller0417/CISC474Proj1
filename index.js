@@ -9,7 +9,6 @@ numBulletsRemoved = 0;
 bulletSpeed = 10;
 canShoot = true;
 heart = undefined;
-player_img = [undefined, "right"];
 
 moveLeft = false; // For determining directions.
 moveRight = false;
