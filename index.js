@@ -594,22 +594,24 @@ function enemyDYN(ref, id, x, y, width, height, dmg, health, speed){
             if (self.y + self.speedY >= 0 && self.y + self.speedY + self.height <= 600)
                 self.y += self.speedY;
         }
+
+        var enemy_id = "enemy" + id;
         
         if (moveRight && moveDown) { // Facing right and down
-            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
-            document.getElementById("enemy").style.transform = "rotate(45deg)";
+            document.getElementById(enemy_id).style.animation = "enemy-move-right 0.6s steps(6) infinite";
+            document.getElementById(enemy_id).style.transform = "rotate(45deg)";
         }
         if (moveLeft && moveDown) { // Facing left and down 
-            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
-            document.getElementById("enemy").style.transform = "rotate(135deg)";
+            document.getElementById(enemy_id).style.animation = "enemy-move-right 0.6s steps(6) infinite";
+            document.getElementById(enemy_id).style.transform = "rotate(135deg)";
         }
         if (moveRight && moveUp) { // Facing right and up
-            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
-            document.getElementById("enemy").style.transform = "rotate(-45deg)";
+            document.getElementById(enemy_id).style.animation = "enemy-move-right 0.6s steps(6) infinite";
+            document.getElementById(enemy_id).style.transform = "rotate(-45deg)";
         }
         if (moveLeft && moveUp) { // Facing left and up
-            document.getElementById("enemy").style.animation = "enemy-move-right 0.6s steps(6) infinite";
-            document.getElementById("enemy").style.transform = "rotate(-135deg)";
+            document.getElementById(enemy_id).style.animation = "enemy-move-right 0.6s steps(6) infinite";
+            document.getElementById(enemy_id).style.transform = "rotate(-135deg)";
         }
          
         // Update the css to show the movement
