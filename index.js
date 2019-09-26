@@ -8,6 +8,8 @@ numBulletsRemoved = 0;
 bulletSpeed = 10;
 canShoot = true;
 
+enemyList = new Map(); // A list of all the enemies that will be on the screen at a time
+
 moveLeft = false; // For determining directions.
 moveRight = false;
 moveUp = false;
