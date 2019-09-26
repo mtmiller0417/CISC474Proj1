@@ -373,14 +373,15 @@ if(imageTimer == 0){    //prevents image from changing every update b/c it was t
     }
     this.takeDamage = function(dmg) {
         /** If invulnerable, don't do anything */
-        if (self.invulnerableFrames > 0)
+        if (self.invulnerableFrames > 0 && !(dmg < 0))
             return;
 
         /** Otherwise take damage, draw HealthBox elements */
-        if (self.currHealth - dmg < 0) {
+        if (self.currHealth - dmg < 0 ) {
             self.currHealth = 0;
-        }
-        else {
+        } else if (self.currHealth - dmg > self.maxHealth){
+            self.currHealth = self.maxHealth;
+        }else {
             self.currHealth = self.currHealth - dmg;
             playerHP -= dmg;
         }
