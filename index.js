@@ -2,11 +2,13 @@
 keys = [];
 bulletList = new Map();
 removeBullets = new Map();
+obstacleList = [];
 var game = undefined;
 bulletId = 0;
 numBulletsRemoved = 0;
 bulletSpeed = 10;
 canShoot = true;
+heart = undefined;
 
 moveLeft = false; // For determining directions.
 moveRight = false;
@@ -25,6 +27,10 @@ var playerHP = playerMaxHP;                 //set the player to have 100 hp to s
 function returnToMain(){
     console.log("ReturnToMain")
     clearInterval(game.interval);
+    obstacleList.forEach(function(b){
+        $("#obstacle"+b.id).remove();
+    });
+    obstacleList = [];
         $("#gameScreen").fadeOut("medium",function(){
             $("#mainMenu").slideDown();
             $("#floorText").html("Floor 1");
@@ -118,17 +124,38 @@ function gameInstance(){
             case 1:
                 // Create the first enemy
                 self.enemy = new enemy(123, 80, 0, 0, 25, 50, 1); // This enemy does 25 dmg per hit and 50 health with a speed of 1
+                heart = new bullet($("<div class='heart' id= 'heart0'></div>").appendTo('#gameScreen'),
+                0, 175, 275, 0, 0, 25, 25);
+                $(heart.ref).css("left", 175);
+                $(heart.ref).css("top", 275);
+                
                 break;
             case 2:
                 // Create the first enemy
                 self.enemy = new enemy(123, 80, 0, 0, 25, 50, 2); // This enemy does 25 dmg per hit and 50 health with a speed of 2
+                obstacleList.push(new bullet ($("<div class='obstacle' id= 'obstacle0'></div>").appendTo('#gameScreen'),
+                0, 525, 100, 0, 0, 75, 125));
+                $(obstacleList[0].ref).css("left", 525);
+                $(obstacleList[0].ref).css("top", 100);
                 break;
             case 3:
                 // Create the first enemy
                 self.enemy = new enemy(123, 80, 0, 0, 30, 100, 2); // This enemy does 30 dmg per hit and 100 health with a speed of 2
+                obstacleList.push(new bullet ($("<div class='obstacle' id= 'obstacle1'></div>").appendTo('#gameScreen'),
+                1, 125, 400, 0, 0, 75, 125));
+                $(obstacleList[1].ref).css("left", 125);
+                $(obstacleList[1].ref).css("top", 400);
                 break;
             case 4:
                 self.enemy = new enemy(123, 80, 0, 0, 30, 100, 3); // This enemy does 30 dmg per hit and 100 health with a speed of 3
+                obstacleList.push(new bullet ($("<div class='obstacle' id= 'obstacle2'></div>").appendTo('#gameScreen'),
+                2, 525, 400, 0, 0, 75, 125));
+                $(obstacleList[2].ref).css("left", 525);
+                $(obstacleList[2].ref).css("top", 400);
+                obstacleList.push(new bullet ($("<div class='obstacle' id= 'obstacle3'></div>").appendTo('#gameScreen'),
+                3, 125, 100, 0, 0, 75, 125));
+                $(obstacleList[3].ref).css("left", 125);
+                $(obstacleList[3].ref).css("top", 100);
                 break;
             default:
                 // Create the first enemy
@@ -144,8 +171,32 @@ function gameInstance(){
     }
 
     this.update = function() {
+
+        if (checkCollision(heart.x, heart.y, heart.width, heart.height, self.p.x, self.p.y, self.p.width, self.p.height)){
+            self.p.takeDamage(-25);
+            $("#heart0").remove();
+            heart = [];
+        }
+
+        obstacleList.forEach(function(b){
+            /** Add a for each loop for the enemylist here */
+            if (checkCollision(b.x, b.y, b.width, b.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height)){
+                self.enemy.movePenalty = true;
+            }
+            if (checkCollision(b.x, b.y, b.width, b.height, self.p.x, self.p.y, self.p.width, self.p.height)){
+                self.p.takeDamage(5);
+
+                if(self.p.currHealth <= 0){
+                    // Possibly show death screen?
+                    returnToMain();
+                }
+            }
+        });
+
         self.p.update();
         self.enemy.update();
+
+        self.enemy.movePenalty = false;
 
         for (var [i, b] of bulletList ) {
             
@@ -367,6 +418,7 @@ function enemy(width, height, x, y, dmg, health, speed){
     this.speedX = 0;
     this.speedY = 0;
     this.moveInc = speed;
+    this.movePenalty = false;
     this.x = x;
     this.y = y;
     this.dmg = dmg;
@@ -386,11 +438,18 @@ function enemy(width, height, x, y, dmg, health, speed){
         var x_distance = x_mid - player_x;
         var y_distance = y_mid - player_y;
 
+        if (self.movePenalty){
+            var offset = self.moveInc/2;
+            console.log(offset);
+        } else {
+            var offset = 0;
+        }
+
         if(Math.abs(x_distance) >= Math.abs(y_distance)){
             // Move x direction
-            if(x_mid > player_x) { self.speedX = 0 - self.moveInc; moveLeft = true;} // Move left
+            if(x_mid > player_x) { self.speedX = 0 - (self.moveInc-offset); moveLeft = true;} // Move left
             else {moveLeft = false;}
-            if(x_mid < player_x) { self.speedX = self.moveInc; moveRight = true; } // Move right
+            if(x_mid < player_x) { self.speedX = (self.moveInc-offset); moveRight = true; } // Move right
             else {moveRight = false;}
             // Check the bounds
             if (self.x + self.speedX >= 0 && self.x + self.speedX + self.height <= 800)          
@@ -398,9 +457,9 @@ function enemy(width, height, x, y, dmg, health, speed){
         }
         else{
             // Move y direction
-            if(y_mid > player_y) { self.speedY = 0 - self.moveInc; moveUp = true; } // Move up
+            if(y_mid > player_y) { self.speedY = 0 - (self.moveInc-offset); moveUp = true; } // Move up
             else {moveUp = false;}
-            if(y_mid < player_y) { self.speedY = self.moveInc; moveDown = true; } // Move down
+            if(y_mid < player_y) { self.speedY = (self.moveInc-offset); moveDown = true; } // Move down
             else {moveDown = false;}
             // Check the bounds
             if (self.y + self.speedY >= 0 && self.y + self.speedY + self.height <= 600)
@@ -452,7 +511,7 @@ function enemy(width, height, x, y, dmg, health, speed){
     
 }
 
-function bullet(ref, id, x, y, xDir, yDir) {
+function bullet(ref, id, x, y, xDir, yDir, height, width) {
     var self = this;
     this.ref = ref
     this.id = id;           
@@ -460,8 +519,8 @@ function bullet(ref, id, x, y, xDir, yDir) {
     this.y = y;
     this.xDir = xDir;
     this.yDir = yDir;
-    this.width = 5;
-    this.height = 5;
+    this.width = width;
+    this.height = height;
 
     
 }
@@ -494,7 +553,7 @@ function updateBullet(b){
 function addBullet(x, y, xDir, yDir) {
     // console.log("<div class='bullet' id= 'bullet"+bulletId+"'></div>");
     bulletList.set(bulletId, new bullet ($("<div class='bullet' id= 'bullet"+bulletId+"'></div>").appendTo('#gameScreen'),
-                        bulletId, x, y, xDir, yDir));
+                        bulletId, x, y, xDir, yDir, 5, 5));
     $(bulletList.get(bulletId).ref).css("left", x);
     $(bulletList.get(bulletId).ref).css("top", y);
     bulletId = (bulletId+1)%25;

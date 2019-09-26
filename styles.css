@@ -233,7 +233,7 @@ body {
 
 .bullet {
     position:absolute;
-    z-index: 0;
+    z-index: 1;
     height:5px;
     width:5px;
     left:0px;
@@ -246,9 +246,32 @@ body {
 #floorText {
     position:absolute;
     display:flex;
-    color:black;
-
+    color:red;
+    text-indent: 10px;
     text-align:center;
-    font-family:arial;
+    font-family:fantasy;
     font-size:50px;
+}
+
+.obstacle {
+    position:absolute;
+    z-index: -1;
+    height:75px;
+    width:125px;
+    
+    background: url("Images/vines.png")
+}
+
+.heart {
+    position: absolute;
+    z-index: 0;
+    height:25px;
+    width:29px;
+    
+    animation: spin 0.8s steps(10) infinite;
+    background: url("Images/heart_sprite2.png")
+}
+
+@keyframes spin {
+    100% {background-position: -287px}
 }
