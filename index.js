@@ -5,6 +5,7 @@ removeBullets = new Map();
 obstacleList = [];
 var game = undefined;
 bulletId = 0;
+explosionId = 0;
 numBulletsRemoved = 0;
 bulletSpeed = 10;
 canShoot = true;
@@ -206,6 +207,13 @@ function gameInstance(){
             if (checkCollision(b.x, b.y, b.width, b.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height)){
                 removeBullets.set(b.id, b);
                 self.enemy.takeDamage(5);
+                var ref = $("<div class='explosion' id= 'exp"+explosionId+"'></div>").appendTo('#gameScreen');
+                $(ref).css("left", b.x);
+                $(ref).css("top", b.y-10);
+                $(ref).bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function(){
+                    $(ref).remove();
+               });
+                explosionId += (explosionId+1)%25;
                 if(self.enemy.currHealth <= 0){
                     nextLevel(self.floor + 1);
                 }
