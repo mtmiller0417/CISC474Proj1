@@ -164,6 +164,17 @@ body {
     background: url("Images/zombie_sprite.png");
 }
 
+.enemy { /* Enemy class */
+    display:flex;
+    position:absolute; /* Should this be absolute??? or relative? */
+    height: 80px;
+    width: 123px;
+    left:0px;
+    top:0px;
+    background: url("Images/zombie_sprite.png");
+    /*background:red*/
+}
+
 @keyframes enemy-move-right {
     from {background-position: 0px 160px}
     to {background-position: -738px 160px};
