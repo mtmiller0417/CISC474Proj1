@@ -116,7 +116,7 @@ body {
     }
     
     ::-webkit-scrollbar-track {
-    border: 1px solid rgb(30, 44, 1);
+    border: 1px solid darkslategray;
     border-radius: 10px;
     }
     
