@@ -93,7 +93,8 @@ body {
     
     top: 50%;
     left: 50%;
-    outline: solid;
+    overflow: auto;
+    outline: 5px solid;
     outline-color: black;
 
     background:darkslategray;
@@ -111,7 +112,7 @@ body {
 /* Scrollbar styles */
 ::-webkit-scrollbar {
     width: 12px;
-    height: 12px;
+    height: 0px;
     }
     
     ::-webkit-scrollbar-track {
@@ -120,12 +121,12 @@ body {
     }
     
     ::-webkit-scrollbar-thumb {
-    background: yellowgreen;  
+    background: white;  
     border-radius: 10px;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-    background: #88ba1c;  
+    background: rgb(30, 44, 1);;  
     }
 
 #helpOkBtn:hover {

@@ -192,14 +192,6 @@ function gameInstance(){
                 addEnemy(1, corner2x, corner2y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
                 addEnemy(2, corner3x, corner3y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
                 addEnemy(3, corner4x, corner4y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
-                obstacleList.push(new bullet ($("<div class='obstacle' id= 'obstacle2'></div>").appendTo('#gameScreen'),
-                2, 525, 400, 0, 0, 75, 125));
-                $(obstacleList[2].ref).css("left", 525);
-                $(obstacleList[2].ref).css("top", 400);
-                obstacleList.push(new bullet ($("<div class='obstacle' id= 'obstacle3'></div>").appendTo('#gameScreen'),
-                3, 125, 100, 0, 0, 75, 125));
-                $(obstacleList[3].ref).css("left", 125);
-                $(obstacleList[3].ref).css("top", 100);
                 break;
             default:
                 // Create the first enemy
