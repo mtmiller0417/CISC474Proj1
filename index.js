@@ -225,7 +225,6 @@ function gameInstance(){
         removeEnemyList = [];
         for (var [i, e] of enemyList ){
             // Makes the enemy move, but not be visible?
-            e.movePenalty = false;
             e.update();
             // If the enemy is dead
             if(e.currHealth <= 0){
@@ -294,6 +293,7 @@ function gameInstance(){
 
         //var collision = checkCollision(self.p.x, self.p.y, self.p.width, self.p.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height);
         for (var [i, e] of enemyList ){
+            e.movePenalty = false;
             var collision = checkCollision(self.p.x, self.p.y, self.p.width, self.p.height, e.x, e.y, e.width, e.height);
             if(collision){
                 // Take damage OR send to end game screen OR send to start
