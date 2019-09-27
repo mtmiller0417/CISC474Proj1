@@ -267,6 +267,13 @@ function gameInstance(){
                 if (checkCollision(b.x, b.y, b.width, b.height, e.x, e.y, e.width, e.height)){
                     removeBullets.set(b.id, b);
                     e.takeDamage(5);
+                    var ref = $("<div class='explosion' id= 'exp"+explosionId+"'></div>").appendTo('#gameScreen');
+                    $(ref).css("left", b.x-10);
+                    $(ref).css("top", b.y-20);
+                    $(ref).bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function(){
+                        $(ref).remove();
+                     });
+                    explosionId += (explosionId+1)%25;
                     if(e.currHealth <= 0){
                         removeEnemyList.push(e);
                         //nextLevel(self.floor + 1);
