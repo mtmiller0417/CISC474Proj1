@@ -37,12 +37,21 @@ function returnToMain(){
     obstacleList.forEach(function(b){
         $("#obstacle"+b.id).remove();
     });
+    clearEnemy();   
     obstacleList = [];
         $("#gameScreen").fadeOut("medium",function(){
             $("#mainMenu").slideDown();
             $("#floorText").html("Floor 1");
             playerHP = playerMaxHP;
         });
+}
+
+function clearEnemy(){
+    enemyList.forEach(function(e){
+        $("#enemy"+e.id).remove();
+        $("#enemyHealthBox"+e.id).remove();
+    });
+    enemyList = new Map();
 }
 
 function nextLevel(floor){
