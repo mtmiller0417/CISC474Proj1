@@ -130,7 +130,7 @@ function gameInstance(){
                 self.enemy = new enemy(123, 80, 0, 0, 25, 50, 1); // This enemy does 25 dmg per hit and 50 health with a speed of 1
                 // Add enemy to enemyList map
                 //enemyList.set("#enemy0", new enemy(123, 80, 0, 0, 25, 50, 1));
-                addEnemy(0, 0, 0, 123, 80, 25, 50, 1); // Add an enemyDYN to the html
+                addEnemy(0, 0, 200, 123, 80, 25, 50, 1); // Add an enemyDYN to the html
 
                 heart = new bullet($("<div class='heart' id= 'heart0'></div>").appendTo('#gameScreen'),
                 0, 175, 275, 0, 0, 25, 25);
@@ -233,6 +233,19 @@ function gameInstance(){
                 self.enemy.takeDamage(5);
                 if(self.enemy.currHealth <= 0){
                     nextLevel(self.floor + 1);
+                }
+            }
+
+            // Add bullet collision detection to the list of enemies
+            for (var [x, e] of enemyList) {
+                if (checkCollision(b.x, b.y, b.width, b.height, e.x, e.y, e.width, e.height)){
+                    removeBullets.set(b.id, b);
+                    e.takeDamage(5);
+                    if(e.currHealth <= 0){
+                        //nextLevel(self.floor + 1);
+                        // Remove the enemy from the enemyList
+                        // If the enemyList is empty, move to the next level
+                    }
                 }
             }
         }
@@ -366,8 +379,6 @@ function player(width, height, x, y) {
         /** Draw */
         $("#player").css("left",self.x);
         $("#player").css("top",self.y);
-
-
 
         imageTimer += 1;
         imageTimer = imageTimer%4;
@@ -537,6 +548,7 @@ function enemy(width, height, x, y, dmg, health, speed){
     
 }
 
+
 // Dynamic enemy creation code
 function enemyDYN(ref, id, x, y, width, height, dmg, health, speed){
     var self = this;
@@ -618,8 +630,32 @@ function enemyDYN(ref, id, x, y, width, height, dmg, health, speed){
         $("#enemy" + id).css("left",self.x);
         $("#enemy" + id).css("top",self.y);
 
-        //$("#enemyHealthBox").css("left",self.x);
-        //$("#enemyHealthBox").css("top",self.y - 15);
+        $("#enemyHealthBox"+id).css("left",self.x);
+        $("#enemyHealthBox"+id).css("top",self.y - 15);
+
+        // Change the contents of the health bar
+        var enemyPctHealth = Math.round(self.currHealth * (100/self.maxHealth));
+        $("#enemyHealthText"+id).html(enemyPctHealth + "%");
+        $("#enemyDamageBar"+id).css("width", enemyPctHealth + "%");
+        $("#enemyHealthBar"+id).css("width", enemyPctHealth + "%");
+    }
+
+    this.takeDamage = function(dmg) {
+        /** Otherwise take damage, draw HealthBox elements */
+        if (self.currHealth - dmg < 0) {
+            self.currHealth = 0;
+        }
+        else {
+            self.currHealth = self.currHealth - dmg;
+        }
+
+        var pctHealth = Math.round(self.currHealth * (100/self.maxHealth));
+        $("#enemyHealthText"+id).html(pctHealth + "%");
+        $("#enemyDamageBar"+id).animate({
+            width: pctHealth + "%"
+        },
+        1000);
+        $("#enemyHealthBar"+id).css("width", pctHealth + "%");
     }
 }
 // Adds an enemy to the html
@@ -628,6 +664,15 @@ function addEnemy(id, x, y, width, height, dmg, health, speed){
                         id, x, y, height, width, dmg, health, speed));
     $(enemyList.get(id).ref).css("left", x);
     $(enemyList.get(id).ref).css("top", y);
+    // Add overarching enemyHealtBox html to gamescreen
+    $("<div id='enemyHealthBox"+id+"' class='healthBox'></div>").appendTo('#gameScreen');
+    // Put the various pieces inside the enemyHealthBox
+    $("<div class='healthText' id='enemyHealthText"+id+"'></div>").appendTo('#enemyHealthBox'+id);
+    $("<div class='damageBar' id='enemyDamageBar"+id+"'></div>").appendTo('#enemyHealthBox'+id);
+    $("<div class='healthBar' id='enemyHealthBar"+id+"'></div>").appendTo('#enemyHealthBox'+id);
+    // Set the location of the enemyHealthBox
+    $("#enemyHealthBox"+id).css("left",x);
+    $("#enemyHealthBox"+id).css("top",y - 15);
 }
 
 function bullet(ref, id, x, y, xDir, yDir, height, width) {
