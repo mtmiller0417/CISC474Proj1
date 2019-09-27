@@ -216,9 +216,20 @@ function gameInstance(){
         // Update the enemy
         self.enemy.update();
         // Update each enemy in the enemyList
+        removeEnemyList = [];
         for (var [i, e] of enemyList ){
             // Makes the enemy move, but not be visible?
             e.update();
+            // If the enemy is dead
+            if(e.currHealth <= 0){
+                // Add them to a list to be removed
+                removeEnemyList.push(e);
+            }
+        }
+        for (var i = 0; i < removeEnemyList.length; i++) {
+            // Call a function to remove something from the list, 
+            // also have to remove it from the html...
+            enemyList.delete(removeEnemyList[i].id);
         }
 
         self.enemy.movePenalty = false;
@@ -386,7 +397,6 @@ function player(width, height, x, y) {
             turnTimer -= 1;
         }
 
-
         $("#playerHealthBox").css("left",self.x);
         $("#playerHealthBox").css("top",self.y - 15);
 
@@ -547,7 +557,6 @@ function enemy(width, height, x, y, dmg, health, speed){
     }
     
 }
-
 
 // Dynamic enemy creation code
 function enemyDYN(ref, id, x, y, width, height, dmg, health, speed){
