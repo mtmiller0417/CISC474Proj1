@@ -127,10 +127,11 @@ function gameInstance(){
         switch(floor) {
             case 1:
                 // Create the first enemy
-                self.enemy = new enemy(123, 80, 0, 0, 25, 50, 1); // This enemy does 25 dmg per hit and 50 health with a speed of 1
+                //self.enemy = new enemy(123, 80, 0, 0, 25, 50, 1); // This enemy does 25 dmg per hit and 50 health with a speed of 1
+
                 // Add enemy to enemyList map
                 //enemyList.set("#enemy0", new enemy(123, 80, 0, 0, 25, 50, 1));
-                addEnemy(0, 0, 200, 123, 80, 25, 50, 1); // Add an enemyDYN to the html
+                addEnemy(0, 0, 200, 123, 80, 25, 50, 1); // Add an enemyDYN to the html and map
 
                 heart = new bullet($("<div class='heart' id= 'heart0'></div>").appendTo('#gameScreen'),
                 0, 175, 275, 0, 0, 25, 25);
@@ -140,7 +141,8 @@ function gameInstance(){
                 break;
             case 2:
                 // Create the first enemy
-                self.enemy = new enemy(123, 80, 0, 0, 25, 50, 2); // This enemy does 25 dmg per hit and 50 health with a speed of 2
+                //self.enemy = new enemy(123, 80, 0, 0, 25, 50, 2); // This enemy does 25 dmg per hit and 50 health with a speed of 2
+                addEnemy(0, 0, 200, 123, 80, 25, 50, 2); // Add an enemyDYN to the html and map
                 obstacleList.push(new bullet ($("<div class='obstacle' id= 'obstacle0'></div>").appendTo('#gameScreen'),
                 0, 525, 100, 0, 0, 75, 125));
                 $(obstacleList[0].ref).css("left", 525);
@@ -148,14 +150,17 @@ function gameInstance(){
                 break;
             case 3:
                 // Create the first enemy
-                self.enemy = new enemy(123, 80, 0, 0, 30, 100, 2); // This enemy does 30 dmg per hit and 100 health with a speed of 2
+                //self.enemy = new enemy(123, 80, 0, 0, 30, 100, 2); // This enemy does 30 dmg per hit and 100 health with a speed of 2
+                addEnemy(0, 0, 200, 123, 80, 25, 100, 2); // Add an enemyDYN to the html and map
                 obstacleList.push(new bullet ($("<div class='obstacle' id= 'obstacle1'></div>").appendTo('#gameScreen'),
                 1, 125, 400, 0, 0, 75, 125));
                 $(obstacleList[1].ref).css("left", 125);
                 $(obstacleList[1].ref).css("top", 400);
                 break;
             case 4:
-                self.enemy = new enemy(123, 80, 0, 0, 30, 100, 3); // This enemy does 30 dmg per hit and 100 health with a speed of 3
+                //self.enemy = new enemy(123, 80, 0, 0, 30, 100, 3); // This enemy does 30 dmg per hit and 100 health with a speed of 3
+                addEnemy(0, 0, 200, 123, 80, 25, 100, 2); // Add an enemyDYN to the html
+                addEnemy(1, 0, 0, 123, 80, 25, 100, 2); // Add an enemyDYN to the html and map
                 obstacleList.push(new bullet ($("<div class='obstacle' id= 'obstacle2'></div>").appendTo('#gameScreen'),
                 2, 525, 400, 0, 0, 75, 125));
                 $(obstacleList[2].ref).css("left", 525);
@@ -172,10 +177,10 @@ function gameInstance(){
         }
 
         
-        var enemyPctHealth = Math.round(self.enemy.currHealth * (100/self.enemy.maxHealth));
-        $("#enemyHealthText").html(enemyPctHealth + "%");
-        $("#enemyDamageBar").css("width", enemyPctHealth + "%");
-        $("#enemyHealthBar").css("width", enemyPctHealth + "%");
+        //var enemyPctHealth = Math.round(self.enemy.currHealth * (100/self.enemy.maxHealth));
+        //$("#enemyHealthText").html(enemyPctHealth + "%");
+        //$("#enemyDamageBar").css("width", enemyPctHealth + "%");
+        //$("#enemyHealthBar").css("width", enemyPctHealth + "%");
         // Update enemy health bars in this list
         for (var [i, e] of enemyList ){
             // Each e is and enemyDYN 'object'
@@ -196,12 +201,12 @@ function gameInstance(){
             /** Add a for each loop for the enemylist here */
             for (var [i, e] of enemyList ){
                 if (checkCollision(b.x, b.y, b.width, b.height, e.x, e.y, e.width, e.height)){
-                    self.enemy.movePenalty = true;
+                    e.movePenalty = true;
                 }
             }
-            if (checkCollision(b.x, b.y, b.width, b.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height)){
+            /*if (checkCollision(b.x, b.y, b.width, b.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height)){
                 self.enemy.movePenalty = true;
-            }
+            }*/
             if (checkCollision(b.x, b.y, b.width, b.height, self.p.x, self.p.y, self.p.width, self.p.height)){
                 self.p.takeDamage(5);
                 // Check if the player has died
@@ -214,11 +219,12 @@ function gameInstance(){
         // Update the player
         self.p.update(); 
         // Update the enemy
-        self.enemy.update();
+        //self.enemy.update();
         // Update each enemy in the enemyList
         removeEnemyList = [];
         for (var [i, e] of enemyList ){
             // Makes the enemy move, but not be visible?
+            e.movePenalty = false;
             e.update();
             // If the enemy is dead
             if(e.currHealth <= 0){
@@ -228,24 +234,26 @@ function gameInstance(){
         }
         for (var i = 0; i < removeEnemyList.length; i++) {
             // Call a function to remove something from the list, 
-            // also have to remove it from the html...
-            enemyList.delete(removeEnemyList[i].id);
+            // as well as removing it from the html
+            removeEnemy(removeEnemyList[i]);
+            //enemyList.delete(removeEnemyList[i].id);
         }
 
-        self.enemy.movePenalty = false;
+        //self.enemy.movePenalty = false;
 
+        removeEnemyList = [];
         for (var [i, b] of bulletList ) {
             
             updateBullet(b);
 
              /**Adding Bullet Check Collision */
-            if (checkCollision(b.x, b.y, b.width, b.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height)){
+            /*if (checkCollision(b.x, b.y, b.width, b.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height)){
                 removeBullets.set(b.id, b);
                 self.enemy.takeDamage(5);
                 if(self.enemy.currHealth <= 0){
-                    nextLevel(self.floor + 1);
+                    //nextLevel(self.floor + 1);
                 }
-            }
+            }*/
 
             // Add bullet collision detection to the list of enemies
             for (var [x, e] of enemyList) {
@@ -253,11 +261,19 @@ function gameInstance(){
                     removeBullets.set(b.id, b);
                     e.takeDamage(5);
                     if(e.currHealth <= 0){
+                        removeEnemyList.push(e);
                         //nextLevel(self.floor + 1);
-                        // Remove the enemy from the enemyList
-                        // If the enemyList is empty, move to the next level
                     }
                 }
+            }
+            for (var i = 0; i < removeEnemyList.length; i++) {
+                // Call a function to remove something from the list, 
+                // as well as removing it from the html
+                removeEnemy(removeEnemyList[i]);
+            }
+            // Move to the next level if there are no enemies remaining
+            if(enemyList.size == 0){
+                nextLevel(self.floor + 1);
             }
         }
 
@@ -268,8 +284,20 @@ function gameInstance(){
         }
         removeBullets.clear();
 
-        var collision = checkCollision(self.p.x, self.p.y, self.p.width, self.p.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height);
-        if(collision){
+        //var collision = checkCollision(self.p.x, self.p.y, self.p.width, self.p.height, self.enemy.x, self.enemy.y, self.enemy.width, self.enemy.height);
+        for (var [i, e] of enemyList ){
+            var collision = checkCollision(self.p.x, self.p.y, self.p.width, self.p.height, e.x, e.y, e.width, e.height);
+            if(collision){
+                // Take damage OR send to end game screen OR send to start
+                self.p.takeDamage(e.dmg);
+    
+                if(self.p.currHealth <= 0){
+                    // Possibly show death screen?
+                    returnToMain();
+                }
+            }
+        }
+        /*if(collision){
             // Take damage OR send to end game screen OR send to start
             self.p.takeDamage(self.enemy.dmg);
 
@@ -277,7 +305,7 @@ function gameInstance(){
                 // Possibly show death screen?
                 returnToMain();
             }
-        }
+        }*/
        
     }
 }
@@ -682,6 +710,16 @@ function addEnemy(id, x, y, width, height, dmg, health, speed){
     // Set the location of the enemyHealthBox
     $("#enemyHealthBox"+id).css("left",x);
     $("#enemyHealthBox"+id).css("top",y - 15);
+}
+
+// Removes the enemy from the map as well as the html
+function removeEnemy(enemyDYN){
+    // Remove the enemy from the Map
+    enemyList.delete(enemyDYN.id); 
+    // Remove the enemy from the html
+    $('#enemy'+enemyDYN.id).remove();
+    // Remove the enemy health car from the html
+    $('#enemyHealthBox'+enemyDYN.id).remove();
 }
 
 function bullet(ref, id, x, y, xDir, yDir, height, width) {
