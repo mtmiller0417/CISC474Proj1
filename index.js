@@ -285,8 +285,10 @@ function gameInstance(){
             }*/
 
             // Add bullet collision detection to the list of enemies
+            var explosion_created = false; 
             for (var [x, e] of enemyList) {
-                if (checkCollision(b.x, b.y, b.width, b.height, e.x, e.y, e.width, e.height)){
+                if (checkCollision(b.x, b.y, b.width, b.height, e.x, e.y, e.width, e.height) && !explosion_created){
+                    explosion_created = true;
                     removeBullets.set(b.id, b);
                     e.takeDamage(5);
                     var ref = $("<div class='explosion' id= 'exp"+explosionId+"'></div>").appendTo('#gameScreen');
