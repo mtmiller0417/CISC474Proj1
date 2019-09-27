@@ -93,6 +93,8 @@ body {
     
     top: 50%;
     left: 50%;
+    outline: solid;
+    outline-color: black;
 
     background:darkslategray;
     color:white;
@@ -159,7 +161,7 @@ body {
     position:relative;
     z-index: 0;
     height:52px;
-    width:68px;
+    width:69px;
     left:0px;
     top:0px;
     
@@ -263,6 +265,9 @@ body {
     width:5px;
     left:0px;
     top:0px;
+    border-radius: 50%;
+    margin-top: -10px;
+    margin-left: -10px;
     
     background:black;
     color:white;

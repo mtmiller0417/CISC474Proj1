@@ -208,8 +208,8 @@ function gameInstance(){
                 removeBullets.set(b.id, b);
                 self.enemy.takeDamage(5);
                 var ref = $("<div class='explosion' id= 'exp"+explosionId+"'></div>").appendTo('#gameScreen');
-                $(ref).css("left", b.x);
-                $(ref).css("top", b.y-10);
+                $(ref).css("left", b.x-10);
+                $(ref).css("top", b.y-20);
                 $(ref).bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function(){
                     $(ref).remove();
                });
