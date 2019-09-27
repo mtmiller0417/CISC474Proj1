@@ -202,6 +202,7 @@ function gameInstance(){
             default:
                 // Create the first enemy
                 //returnToMain();
+                document.getElementById('endText').innerHTML = "You Win!";
                 displayEndScreen();
                 break;
         }
@@ -243,6 +244,7 @@ function gameInstance(){
                 if(self.p.currHealth <= 0){
                     // Possibly show death screen?
                     //returnToMain();
+                    document.getElementById('endText').innerHTML = "You Died!";
                     displayEndScreen();
                 }
             }
@@ -341,6 +343,7 @@ function gameInstance(){
                 if(self.p.currHealth <= 0){
                     // Possibly show death screen?
                     //returnToMain();
+                    document.getElementById('endText').innerHTML = "You Died!";
                     displayEndScreen();
                 }
             }
@@ -628,7 +631,7 @@ function enemy(width, height, x, y, dmg, health, speed){
         $("#enemyDamageBar").animate({
             width: pctHealth + "%"
         },
-        100);
+        200);
         $("#enemyHealthBar").css("width", pctHealth + "%");
     }
     
@@ -739,7 +742,7 @@ function enemyDYN(ref, id, x, y, width, height, dmg, health, speed){
         $("#enemyDamageBar"+id).animate({
             width: pctHealth + "%"
         },
-        1000);
+        200);
         $("#enemyHealthBar"+id).css("width", pctHealth + "%");
     }
 }
