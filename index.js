@@ -59,8 +59,8 @@ function nextLevel(floor){
     clearGame(); // Clear the bullets from the game
     //$("#gameScreen").fadeIn();
     game.initGame(floor);
-    // Do this to fix floor 5 displaying as gamescreen is fading out
-    if (floor <= 5){
+    // Do this to fix last floor displaying as gamescreen is fading out
+    if (floor <= 10){
         $("#floorText").html('Floor ' + floor);
     }
 }
@@ -154,19 +154,17 @@ function gameInstance(){
                 // Create the first enemy
                 //self.enemy = new enemy(123, 80, 0, 0, 25, 50, 1); // This enemy does 25 dmg per hit and 50 health with a speed of 1
                 addEnemy(0, corner1x, corner1y, enemyWidth, enemyHeight, 25, 50, 1); // Add an enemyDYN to the html and map
-                addEnemy(1, corner4x, corner4y, enemyWidth, enemyHeight, 25, 50, 1); // Add an enemyDYN to the html and map
-
+                //addEnemy(1, corner4x, corner4y, enemyWidth, enemyHeight, 25, 50, 1); // Add an enemyDYN to the html and map
                 heart = new bullet($("<div class='heart' id= 'heart0'></div>").appendTo('#gameScreen'),
                 0, 175, 275, 0, 0, 25, 25);
                 $(heart.ref).css("left", 175);
                 $(heart.ref).css("top", 275);
-                
                 break;
             case 2:
                 // Create the first enemy
                 //self.enemy = new enemy(123, 80, 0, 0, 25, 50, 2); // This enemy does 25 dmg per hit and 50 health with a speed of 2
-                addEnemy(0, corner1x, corner1y, enemyWidth, enemyHeight, 25, 75, 2); // Add an enemyDYN to the html and map
-                addEnemy(1, corner2x, corner2y, enemyWidth, enemyHeight, 25, 75, 2); // Add an enemyDYN to the html and map
+                addEnemy(0, corner1x, corner1y, enemyWidth, enemyHeight, 25, 50, 1); // Add an enemyDYN to the html and map
+                addEnemy(1, corner2x, corner2y, enemyWidth, enemyHeight, 25, 50, 1); // Add an enemyDYN to the html and map
                 obstacleList.push(new bullet ($("<div class='obstacle' id= 'obstacle0'></div>").appendTo('#gameScreen'),
                 0, 525, 100, 0, 0, 75, 125));
                 $(obstacleList[0].ref).css("left", 525);
@@ -176,7 +174,7 @@ function gameInstance(){
                 // Create the first enemy
                 //self.enemy = new enemy(123, 80, 0, 0, 30, 100, 2); // This enemy does 30 dmg per hit and 100 health with a speed of 2
                 addEnemy(0, corner1x, corner1y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
-                addEnemy(1, corner2x, corner2y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
+                //addEnemy(1, corner2x, corner2y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
                 obstacleList.push(new bullet ($("<div class='obstacle' id= 'obstacle1'></div>").appendTo('#gameScreen'),
                 1, 125, 400, 0, 0, 75, 125));
                 $(obstacleList[1].ref).css("left", 125);
@@ -186,7 +184,7 @@ function gameInstance(){
                 //self.enemy = new enemy(123, 80, 0, 0, 30, 100, 3); // This enemy does 30 dmg per hit and 100 health with a speed of 3
                 addEnemy(0, corner1x, corner1y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
                 addEnemy(1, corner2x, corner2y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
-                addEnemy(2, corner3x, corner3y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
+                //addEnemy(2, corner3x, corner3y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
                 obstacleList.push(new bullet ($("<div class='obstacle' id= 'obstacle2'></div>").appendTo('#gameScreen'),
                 2, 525, 400, 0, 0, 75, 125));
                 $(obstacleList[2].ref).css("left", 525);
@@ -200,33 +198,50 @@ function gameInstance(){
                 addEnemy(0, corner1x, corner1y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
                 addEnemy(1, corner2x, corner2y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
                 addEnemy(2, corner3x, corner3y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
+                //addEnemy(3, corner4x, corner4y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
+                break;
+            case 6:
+                addEnemy(0, corner1x, corner1y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
+                addEnemy(1, corner2x, corner2y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
+                addEnemy(2, corner3x, corner3y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
                 addEnemy(3, corner4x, corner4y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
+                break;
+            case 7:
+                addEnemy(0, corner1x, corner1y, enemyWidth, enemyHeight, 25, 150, 3); // Add an enemyDYN to the html and map
+                addEnemy(1, corner2x, corner2y, enemyWidth, enemyHeight, 25, 150, 3); // Add an enemyDYN to the html and map
+                //addEnemy(2, corner3x, corner3y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
+                //addEnemy(3, corner4x, corner4y, enemyWidth, enemyHeight, 25, 100, 2); // Add an enemyDYN to the html and map
+                break;
+            case 8:
+                addEnemy(0, corner1x, corner1y, enemyWidth, enemyHeight, 25, 150, 3); // Add an enemyDYN to the html and map
+                addEnemy(1, corner2x, corner2y, enemyWidth, enemyHeight, 25, 150, 3); // Add an enemyDYN to the html and map
+                addEnemy(2, corner3x, corner3y, enemyWidth, enemyHeight, 25, 150, 3); // Add an enemyDYN to the html and map
+                addEnemy(3, corner4x, corner4y, enemyWidth, enemyHeight, 25, 150, 3); // Add an enemyDYN to the html and map
+                break;
+            case 9:
+                addEnemy(0, corner1x, corner1y, enemyWidth, enemyHeight, 50, 200, 4); // Add an enemyDYN to the html and map
+                break;
+            case 10:
+                addEnemy(0, corner1x, corner1y, enemyWidth, enemyHeight, 50, 200, 4); // Add an enemyDYN to the html and map
+                addEnemy(1, corner4x, corner4y, enemyWidth, enemyHeight, 50, 200, 4); // Add an enemyDYN to the html and map
                 break;
             default:
                 // Create the first enemy
                 returnToMain();
                 break;
         }
-
-        
-        //var enemyPctHealth = Math.round(self.enemy.currHealth * (100/self.enemy.maxHealth));
-        //$("#enemyHealthText").html(enemyPctHealth + "%");
-        //$("#enemyDamageBar").css("width", enemyPctHealth + "%");
-        //$("#enemyHealthBar").css("width", enemyPctHealth + "%");
-        // Update enemy health bars in this list
-        for (var [i, e] of enemyList ){
-            // Each e is and enemyDYN 'object'
-        }
     }
 
     this.update = function() {
 
         // Check if the player has interacted with the heart
-        if (checkCollision(heart.x, heart.y, heart.width, heart.height, self.p.x, self.p.y, self.p.width, self.p.height)){
-            self.p.takeDamage(-25);
-            $("#heart0").remove();
-            heart = [];
-        }
+        //if(heart != undefined){
+            if (checkCollision(heart.x, heart.y, heart.width, heart.height, self.p.x, self.p.y, self.p.width, self.p.height)){
+                self.p.takeDamage(-25);
+                $("#heart0").remove();
+                heart = [];
+            }
+        //}
 
         //Check if there has been a collisison with the obstacle(either player or enemy)
         obstacleList.forEach(function(b){
