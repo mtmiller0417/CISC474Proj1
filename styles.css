@@ -147,8 +147,7 @@ body {
     top: 50%;
     left: 50%;
 
-    background:whitesmoke;
-    color:white;
+    background: url("Images/backgrounds/background10filter3.png");
     outline: solid;
     outline-color: black;
     text-align:center;
