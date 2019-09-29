@@ -37,8 +37,16 @@ function returnToMain(){
     obstacleList.forEach(function(b){
         $("#obstacle"+b.id).remove();
     });
+    $("#gameScreen").css("background", 'url("Images/backgrounds/background9filter4.png")')
     clearEnemy();   
     obstacleList = [];
+
+    for (var i = 0; i < heartList.length; i++){
+        $(heartList[i].ref).remove();
+        heartList.splice(i, 1);
+    }
+    heartList = [];
+
     $("#gameScreen").fadeOut("medium",function(){
         $("#mainMenu").slideDown();
         $("#floorText").html("Floor 1");
@@ -72,6 +80,7 @@ function clearGame(){
        bulletList.delete(b.id);
    }
    removeBullets.clear();
+
 }
 
 function displayEndScreen(){
@@ -201,6 +210,7 @@ function gameInstance(){
                 $(obstacleList[3].ref).css("top", 100);
                 break;
             case 5:
+                $("#gameScreen").css("background", 'url("Images/backgrounds/background2.png")')
                 addEnemy(0, corner1x, corner1y, enemyWidth, enemyHeight, 25, 50, 2); // Add an enemyDYN to the html and map
                 addEnemy(1, corner2x, corner2y, enemyWidth, enemyHeight, 25, 50, 2); // Add an enemyDYN to the html and map
                 addEnemy(2, corner3x, corner3y, enemyWidth, enemyHeight, 25, 50, 2); // Add an enemyDYN to the html and map
@@ -213,7 +223,6 @@ function gameInstance(){
                 addEnemy(3, corner4x, corner4y, enemyWidth, enemyHeight, 25, 50, 3); // Add an enemyDYN to the html and map
                 break;
             case 7:
-                $("#gameScreen").css("background", 'url("Images/backgrounds/background4filter3.png")')
                 ref = $("<div class='heart' id= 'heart1'></div>").appendTo('#gameScreen');
                 heartList.push(new bullet(ref, 0, 550, 275, 0, 0, 25, 25));
                 $(ref).css("left", 550);
@@ -228,6 +237,7 @@ function gameInstance(){
                 $(obstacleList[4].ref).css("top", 0);
                 break;
             case 8:
+                $("#gameScreen").css("background", 'url("Images/backgrounds/background4filter3.png")')
                 addEnemy(0, corner1x, corner1y, enemyWidth, enemyHeight, 25, 100, 1); // Add an enemyDYN to the html and map
                 addEnemy(1, corner2x, corner2y, enemyWidth, enemyHeight, 25, 100, 1); // Add an enemyDYN to the html and map
                 //addEnemy(2, corner3x, corner3y, enemyWidth, enemyHeight, 25, 50, 2); // Add an enemyDYN to the html and map
