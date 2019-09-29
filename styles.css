@@ -179,6 +179,25 @@ body {
     font-size:30px;
 }
 
+#endText {
+    margin-top: 5px;
+
+    font-family:fantasy;
+    font-size:30px;
+}
+
+#returnBtn {
+    width:400px;
+}
+
+#returnBtn:hover {
+    background:slategray;
+    color:white;
+
+    -webkit-transform:scale(1.1);
+    transform:scale(1.1);
+}
+
 #player {
     position:relative;
     z-index: 0;

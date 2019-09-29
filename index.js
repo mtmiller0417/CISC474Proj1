@@ -202,7 +202,10 @@ function gameInstance(){
             default:
                 // Create the first enemy
                 //returnToMain();
-                document.getElementById('endText').innerHTML = "You Win!";
+                document.getElementById('endText').innerHTML = "You've escaped the forest!";
+                $("#endImage").attr("src", "Images/endofforest.png");
+                $("#endImage").attr("width", "75%");
+                $("#endImage").attr("height", "50%");
                 displayEndScreen();
                 break;
         }
@@ -245,6 +248,9 @@ function gameInstance(){
                     // Possibly show death screen?
                     //returnToMain();
                     document.getElementById('endText').innerHTML = "You Died!";
+                    $("#endImage").attr("src", "Images/skull.png");
+                    $("#endImage").attr("width", "25%");
+                    $("#endImage").attr("height", "50%");
                     displayEndScreen();
                 }
             }
@@ -344,6 +350,9 @@ function gameInstance(){
                     // Possibly show death screen?
                     //returnToMain();
                     document.getElementById('endText').innerHTML = "You Died!";
+                    $("#endImage").attr("src", "Images/skull.png");
+                    $("#endImage").attr("width", "25%");
+                    $("#endImage").attr("height", "50%");
                     displayEndScreen();
                 }
             }
