@@ -39,11 +39,11 @@ function returnToMain(){
     });
     clearEnemy();   
     obstacleList = [];
-        $("#gameScreen").fadeOut("medium",function(){
-            $("#mainMenu").slideDown();
-            $("#floorText").html("Floor 1");
-            playerHP = playerMaxHP;
-        });
+    $("#gameScreen").fadeOut("medium",function(){
+        $("#mainMenu").slideDown();
+        $("#floorText").html("Floor 1");
+        playerHP = playerMaxHP;
+    });
 }
 
 function clearEnemy(){
@@ -74,10 +74,15 @@ function clearGame(){
    removeBullets.clear();
 }
 
+function displayEndScreen(){
+    $("#endScreen").slideDown();
+}
+
 $(function(){
     //this code runs after page is fully loaded
     $("#helpMenu").hide();
     $("#gameScreen").hide();
+    $("#endScreen").hide();
 
     /* Button Functionality */
     $("#playBtn").click(function(){
@@ -99,6 +104,7 @@ $(function(){
     });
 
     $("#returnBtn").click(function(){
+        $("#endScreen").slideUp();
         returnToMain();
     });
 
@@ -252,7 +258,12 @@ function gameInstance(){
                 break;
             default:
                 // Create the first enemy
-                returnToMain();
+                //returnToMain();
+                document.getElementById('endText').innerHTML = "You've escaped the forest!";
+                $("#endImage").attr("src", "Images/endofforest.png");
+                $("#endImage").attr("width", "75%");
+                $("#endImage").attr("height", "50%");
+                displayEndScreen();
                 break;
         }
     }
@@ -287,7 +298,12 @@ function gameInstance(){
                 // Check if the player has died
                 if(self.p.currHealth <= 0){
                     // Possibly show death screen?
-                    returnToMain();
+                    //returnToMain();
+                    document.getElementById('endText').innerHTML = "You Died!";
+                    $("#endImage").attr("src", "Images/skull.png");
+                    $("#endImage").attr("width", "25%");
+                    $("#endImage").attr("height", "50%");
+                    displayEndScreen();
                 }
             }
         });
@@ -384,7 +400,12 @@ function gameInstance(){
     
                 if(self.p.currHealth <= 0){
                     // Possibly show death screen?
-                    returnToMain();
+                    //returnToMain();
+                    document.getElementById('endText').innerHTML = "You Died!";
+                    $("#endImage").attr("src", "Images/skull.png");
+                    $("#endImage").attr("width", "25%");
+                    $("#endImage").attr("height", "50%");
+                    displayEndScreen();
                 }
             }
         }
@@ -671,7 +692,7 @@ function enemy(width, height, x, y, dmg, health, speed){
         $("#enemyDamageBar").animate({
             width: pctHealth + "%"
         },
-        1000);
+        200);
         $("#enemyHealthBar").css("width", pctHealth + "%");
     }
     
@@ -782,7 +803,7 @@ function enemyDYN(ref, id, x, y, width, height, dmg, health, speed){
         $("#enemyDamageBar"+id).animate({
             width: pctHealth + "%"
         },
-        1000);
+        200);
         $("#enemyHealthBar"+id).css("width", pctHealth + "%");
     }
 }
