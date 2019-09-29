@@ -14,7 +14,7 @@ body {
     margin-left:-150px;
     margin-top:-200px;
     
-    top: 50%;
+    top: 30%;
     left: 50%;
     -webkit-text-stroke-width: 1px;
    -webkit-text-stroke-color: white;
@@ -32,7 +32,7 @@ body {
 
     text-align:center;
     font-family:fantasy;
-    font-size:50px;
+    font-size:100px;
 
     display:inline-block;
 }
